@@ -1,0 +1,41 @@
+
+{% extends 'base.html'%}
+{% block content %}
+	<div class="col-lg-12">
+   <div class="card">
+   <div class="card-header d-flex align-items-center">
+     <h3 class="h4">Export Attendence</h3>
+   </div>
+  <div class="card-body">
+	<form method="post" class="form-horizontal">
+		  {% csrf_token %}
+		<div class="form-group row">
+			<label for="id_Month" class="col-sm-2 form-control-label">Month  </label>
+			<div class="col-sm-3">
+				<select name ="Month" class="form-control" id="id_Month">
+						<option value="">--select Month--</option>
+					  	<option value="1">January</option>
+						<option value="2">February</option>
+						<option value="3">March</option>
+						<option value="4">April</option>
+						<option value="5">May</option>
+						<option value="6">June</option>
+						<option value="7">July</option>
+						<option value="8">August</option>
+						<option value="9">September</option>
+						<option value="10">October</option>
+						<option value="11">November</option>
+						<option value="12">December</option>
+				</select></div>
+		</div>
+		<br></br>
+		
+		<div class="form-group">        
+	      <div class="col-sm-offset-2 col-sm-10">
+	        <button type="submit" class="btn btn-primary glyphicon glyphicon-print"> Export</button>
+	      </div>
+	      
+	    </div>
+	</form></div></div></div>
+
+{%endblock%}

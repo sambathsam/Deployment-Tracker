@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AI Deployment Tracker</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="{% static 'css/style2.css' %}" rel="stylesheet">-->
+    <link rel="stylesheet" href="{% static 'reports/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static 'reports/vendor/font-awesome/css/font-awesome.min.css' %}">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="{% static 'reports/css/fontastic.css' %}">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static 'reports/css/style.default.css' %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="{% static 'reports/css/custom.css' %}">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'reports/img/favicon.ico' %}">
+    
+  </head>
+  <body>
+    <div class="page">
+      <!-- Main Navbar-->
+      <header class="header">
+        <nav class="navbar">
+          
+          <div class="container-fluid">
+            <div class="navbar-holder d-flex align-items-center justify-content-between">
+              <!-- Navbar Header-->
+              <div class="navbar-header">
+                <!-- Navbar Brand --><a href="#" class="navbar-brand d-none d-sm-inline-block">
+                  <div class="brand-text d-none d-lg-inline-block"><span></span><strong>Deployment Tracker</strong></div>
+                <!-- Toggle Button--><a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
+              </div>
+              <!-- Navbar Menu -->
+              <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                
+                <!-- Logout    -->
+                <li class="nav-item"><a href="/logout" class="nav-link logout"> <span class="d-none d-sm-inline">Logout</span><i class="fa fa-sign-out"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="page-content d-flex align-items-stretch"> 
+        <!-- Side Navbar -->
+        <nav class="side-navbar">
+          <!-- Sidebar Header-->
+          <div class="sidebar-header d-flex align-items-center">
+          	
+            <div class="avatar">
+            {%if user.Empimage%}
+            	<img src={{user.Empimage.url}} alt="..." class="img-fluid rounded-circle">
+            {%else%}
+            	<img src="{% static '/reports/img/photos/user.png' %}" alt="..." class="img-fluid rounded-circle">
+            {%endif%}
+            </div>
+            <div class="title">
+              <h1 class="h4">{{ user.username|title }}</h1>
+              <p>{{ user.Designation}}</p>
+              <h4 id="today_date"></h4>
+            </div>
+          </div>
+          <!-- Sidebar Navidation Menus-->
+          <ul class="list-unstyled">
+          			<li><a href="/create"> <i class="icon-interface-windows"></i>Log create </a></li>
+                    <li><a href="/reports"> <i class="icon-bill"></i>Create Report </a></li>
+                    <li><a href="/reportlist"> <i class="icon-grid"></i>Show My Reports </a></li>
+                    <li><a href="/reviewlist"> <i class="fa fa-bar-chart"></i>Show My Reviews </a></li>
+                    {% if user.is_superuser %}
+                    <li><a href="/userlist"> <i class="icon-user"></i>User List </a></li>
+                    {% endif %}
+          </ul>
+          <ul class="list-unstyled CTAs">
+                	{% if 'userlist' not in request.path%}
+                		{%if 'signup' not in request.path%}
+                		 {%if 'editreports' not in request.path%}
+                		 {%if 'export' not in request.path%}
+		                	<h4>&nbsp;Pending Dates</h4>
+		                    {%for date in dates%}
+		                    <li><a class="download">{{date.weekday}}</a></li>
+		                    {% empty %}
+		                     <li><a class="download">Wow there is no pending date</a></li>
+		                    {%endfor%}
+		                 {% endif %}
+		                 {% endif %}
+		                {% endif %}
+                    {% endif %}
+                </ul>
+             <ul class="list-unstyled CTAs">
+                	{% if user.is_superuser %} 
+                    <a href="{% url 'export_users_xls' %}" class="btn btn-success btn-md">
+			          <span class="glyphicon glyphicon-print"></span> Export reports
+			        </a>
+                    {% endif %}
+                    {% if user.is_superuser %} 
+                    <a href="{% url 'attendence_xls' %}" class="btn btn-success btn-md">
+			          <span class="glyphicon glyphicon-print"></span> Attendence
+			        </a>
+                    {% endif %}
+                </ul>
+				            
+        </nav>
+          {% block content %}
+		  {% endblock %}
+                    
+          <!-- Page Footer-->        </div>
+      </div>
+    <!-- JavaScript files-->
+    <script src="{% static 'reports/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'reports/vendor/popper.js/umd/popper.min.js' %}"> </script>
+    <script src="{% static 'reports/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'reports/vendor/jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static 'reports/vendor/jquery-validation/jquery.validate.min.js' %}"></script>
+    <!-- Main File-->
+    <script src="{% static 'reports/js/front.js' %}"></script>
+    {% block javascript %}
+    {% endblock %}
+    <script type="text/javascript">
+            $(document).ready(function () {
+                $("#sidebar").mCustomScrollbar({
+                    theme: "minimal"
+                });
+
+                $('#sidebarCollapse').on('click', function () {
+                    $('#sidebar, #content').toggleClass('active');
+                    $('.collapse.in').toggleClass('in');
+                    $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+                });
+            });
+        </script>
+    <script>
+			n =  new Date();
+			y = n.getFullYear();
+			m = n.getMonth() + 1;
+			d = n.getDate();
+			document.getElementById("today_date").innerHTML = d + "-" + m + "-" + y;
+		</script>
+  </body>
+</html>

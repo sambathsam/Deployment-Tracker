@@ -1,0 +1,69 @@
+{% extends 'base.html'%}
+{% block content %}
+{% if user.is_superuser %} 
+
+<div class="content-inner">
+	<header class="page-header">
+            <div class="container-fluid">
+              <h2 class="no-margin-bottom">Users List</h2>
+            </div>
+          </header>
+  <div class="table-responsive"> 
+  {% if emp_list %}
+  <from method = "POST">
+  	<table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Employee Name</th>
+		  <th>Employee Id</th>
+		  <th>Primary Project</th>
+		  <th>Team</th>
+		  <th>Date Of Join</th>
+		</tr>
+      </thead>
+     <tbody id="myTable">
+	    {% for emp in emp_list %}
+               {%if not emp.username == 'Admin'%}
+	        <tr>
+	        <td></td>
+	        <td>{{ emp.EmpName |title }}</td>
+	        <td>{{ emp.Empid }}</td>
+	        <td>{{ emp.primary_project }}</td>
+	        <td>{{ emp.Team }}</td>
+	        <td>{{ emp.date_join }}</td>
+	        {%if emp.status == 0 %}
+		        <td value ="{{ emp.Empid }}" name="{{ emp.Empid }}" id="myTable"><a href="/reportlist/{{ emp.Empid }}" class="btn btn-success btn-sm">
+		          show reports
+		        </a></td>
+		    {%else%}
+		    	<td value ="{{ emp.Empid }}" name="{{ emp.Empid }}" id="myTable"><a href="/reportlist/{{ emp.Empid }}" class="btn btn-danger btn-sm">
+		          show reports
+		        </a></td>
+		    {%endif%}
+	        <td value ="{{ emp.Empid }}" name="{{ emp.Empid }}" id="myTable"><a href="/useredit/{{ emp.Empid }}" class="btn btn-warning btn-sm">
+	          Edit User
+	        </a></td>
+	        <td value ="{{ emp.Empid }}" name="{{ emp.Empid }}" id="myTable"><a href="/review/{{ emp.Empid }}" class="btn btn-primary btn-sm">
+	          Review
+	        </a></td>
+	        </tr>
+               {%endif%}
+	    {% endfor %}
+	    </tbody>
+    </table>
+	    <div class="col-xs-12 col-xs-offset-0 col-sm-offset-3 form-actions text-center">
+	     <a href="{% url 'signup' %}" class="btn btn-info btn-md">
+	     <span class="glyphicon glyphicon-user"></span> Add User
+	     </a>
+	  </div>
+    </from>
+  </div></div>
+  {% else %}
+    <p>There are no users in the library.</p>
+  {% endif %}  
+ {% else %}
+    <h1>You are not permited to view list Go back {{user.username}} </h1>
+  {% endif %}      
+ 
+{% endblock %}

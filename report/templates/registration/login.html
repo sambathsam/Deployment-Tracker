@@ -1,0 +1,101 @@
+{% load static%}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AI Deployment Tracker</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static 'reports/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static 'reports/vendor/font-awesome/css/font-awesome.min.css' %}">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="{% static 'reports/css/fontastic.css' %}">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static 'reports/css/style.default.css' %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="{% static 'reports/css/custom.css' %}">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'reports/img/favicon.ico' %}">
+  </head>
+  <body>
+	<div class="page login-page">
+	      <div class="container d-flex align-items-center">
+	        <div class="form-holder has-shadow">
+	          <div class="row">
+	            <!-- Logo & Information Panel-->
+	            <div class="col-lg-6">
+	              <div class="info d-flex align-items-center">
+	                <div class="content">
+	                  <div class="logo">
+	                    <h1>Algolitics India LLP</h1>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	            <!-- Form Panel    -->
+            <div class="col-lg-6 bg-white">
+              <div class="form d-flex align-items-center">
+                <div class="content">
+            
+            <form method="post" class="form-validate">
+             {% csrf_token %}
+             {% if form.errors %}
+				    {% for field in form %}
+				        {% for error in field.errors %}
+				            <div class="alert alert-danger">
+				                <strong>{{ error|escape }}</strong>
+				            </div>
+				        {% endfor %}
+				    {% endfor %}
+				    {% for error in form.non_field_errors %}
+				        <div class="alert alert-danger">
+				            <strong>{{ error|escape }}</strong>
+				        </div>
+				    {% endfor %}
+				{% endif %}
+              
+               <!-- <div class="form-group">
+               <input type="text" name="{{ form.username.name }}" maxlength="{{ form.username.field.max_length }}"  autofocus required id= "id_{{ form.username.name}}"  class="form-control pb_height-50 reverse" placeholder="Username"/ >
+              </div>
+              <div class="form-group">
+               <input type="password" name="{{ form.password.name }}"  required id= "id_{{ form.password.name}}"  class="form-control pb_height-50 reverse" placeholder="Password"/ >
+              </div> -->
+              
+              <div class="form-group">
+                 <input id="id_{{ form.username.name}}" type="text" placeholder="Username" autofocus required id= "id_username" name="{{ form.username.name }}" required data-msg="Please enter your username" class="input-material">
+               </div>
+               <div class="form-group">
+                 <input id="id_{{ form.password.name}}" type="password" placeholder="Password" name="{{ form.password.name }}" required data-msg="Please enter your password" class="input-material">
+               </div>
+               <div class="form-group">
+                <input type="submit" class="btn btn-primary btn-md btn-shadow-blue" value="Log In">
+              </div>
+            </form>
+            </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyrights text-center">
+        <p>Design & Developed by <a href="#" class="external">Pythonic</a>
+        </p>
+      </div>
+    </div>
+	<!-- JavaScript files-->
+    <script src="{% static 'reports/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'reports/vendor/popper.js/umd/popper.min.js' %}"> </script>
+    <script src="{% static 'reports/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'reports/vendor/jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static 'reports/vendor/jquery-validation/jquery.validate.min.js' %}"></script>
+    <!-- Main File-->
+    <script src="{% static 'reports/js/front.js' %}"></script>
+	</body>
+</html>

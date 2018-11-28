@@ -1,0 +1,63 @@
+{% load widget_tweaks %}
+
+	<div class="form-group row">
+		<label for="id_Report_date" class="col-sm-5 form-control-label">Report date</label> 
+		<div class="col-sm-6">
+		<input class="form-control" type="date" name="Report_date"  id="id_Report_date" required>
+		</div></div>
+	<div class="form-group row">
+		<label for="id_Attendence_0" class="col-sm-5 form-control-label">Attendence</label> 
+		<div class="col-sm-7"><ul id="id_Attendence">
+	    <li><label for="id_Attendence_0"><input type="radio" name="Attendence" value="Present" id="id_Attendence_0"  checked>Present</label></li>
+	    <li><label for="id_Attendence_1"><input type="radio" name="Attendence" value="Leave" id="id_Attendence_1" >leave</label></li>
+		<li><label for="id_Attendence_2"><input type="radio" name="Attendence" value="Half day leave" id="id_Attendence_2" >Half day leave</label></li>
+		<li><label for="id_Attendence_3"><input type="radio" name="Attendence" value="Permission" id="id_Attendence_3" >Permission</label></li>
+		<li><label for="id_Attendence_4"><input type="radio" name="Attendence" value="WO" id="id_Attendence_4" >Week Off</label></li>
+		<li><label for="id_Attendence_5"><input type="radio" name="Attendence" value="OT" id="id_Attendence_5" >Over Time</label></li>
+		<li><label for="id_Attendence_6"><input type="radio" name="Attendence" value="GH" id="id_Attendence_6" >Govt Holiday</label></li>
+		<li><label for="id_Attendence_7"><input type="radio" name="Attendence" value="WFH" id="id_Attendence_7" >WFH</label></li>
+	</ul></div></div>
+	
+	<div class="form-group row">
+		<label for="id_Project_name" class="col-sm-5 form-control-label">Project name</label> 
+		<div class="col-sm-6"><select class="form-control" name="Project_name"  id="id_Project_name">
+		  <option value="" selected>---------</option>
+		  {% for quiz in data%}
+		  <option value="{{quiz.pk}}">{{quiz.Projectname}}</option>
+		  {%endfor%}
+	</select></div></div>
+	<div class="form-group row">
+		<label for="id_Subproject_name" class="col-sm-5 form-control-label">Subproject name</label> 
+		<div class="col-sm-6"><select class="form-control" name="Subproject_name"  id="id_Subproject_name">
+		  <option value="" selected>---------</option>
+	</select></div></div>
+	
+	<div class="form-group row">
+	<label for="id_Task" class="col-sm-5 form-control-label">Task</label> <div class="col-sm-6"><select class="form-control" name="Task"  id="id_Task">
+	  <option value="" selected>---------</option>
+	  <option value="Scripting">Scripting</option>
+	  <option value="Re-scripting">Rescripting</option>
+	  <option value="Analysis">Analysis</option>
+	  <option value="Manual">Manual</option>
+	  <option value="Tool Monitoring">Tool Monitoring</option>
+	  <option value="Meeting">Meeting</option>
+	  <option value="URL Identification">URL Identification</option>
+	  <option value="Duplicate Identification">Duplicate Identification</option>
+	  <option value="Hotelcode Identification">Hotelcode Identification</option>
+	</select></div></div>
+	
+	<div class="form-group row">
+	<label for="id_start_time" class="col-sm-5 form-control-label">Start Time</label> 
+	<div class="col-sm-6"><input type="datetime-local" class="form-control" name="start_time"   id="id_start_time">
+	</div></div>
+	<div class="form-group row">
+	<label for="id_start_time" class="col-sm-5 form-control-label">End Time</label> 
+	<div class="col-sm-6"><input type="datetime-local" class="form-control" name="End_time"   id="id_end_time">
+	</div></div>
+	<input class="form-control" type="hidden" name="No_hours" value="0"  id="id_No_hours" step="0.01">
+	<div class="form-group row"><label for="id_Comments" class="col-sm-5 form-control-label">Comments:</label> 
+	<div class="col-sm-6"><input class="form-control" type="text" name="Comments" required maxlength="500" id="id_Comments"></div></div>
+	  
+
+  
+  

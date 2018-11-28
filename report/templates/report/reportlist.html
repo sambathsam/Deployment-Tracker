@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<!-- <link rel="stylesheet" href="{% static 'assets/css/style2.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/collapsib.css' %}"> -->
+<div class="content-inner">
+	<header class="page-header">
+            <div class="container-fluid">
+             {%if request.path  != '/reportlist/' %}
+			<h4 align="left">{{usrname.EmpName | title}}'s Reports</h4>
+			{%else%}
+			<h2 class="no-margin-bottom">My Reports</h2>
+		    {%endif%}
+            </div>
+          </header>
+	<form method ="post">{% csrf_token %}
+	  	<br>
+		<h5 align="center" >&nbsp;&nbsp;Select Date : <input type="date" name="show_date"/>
+	       <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-search"></span> Search</button>
+		</h5>
+	  </form>
+	  <section class="tables">   
+                <div class="col-lg-12">
+                  <div class="card">
+	  {%for datas in form%}
+		  {%for data in datas%}
+		   {% if forloop.counter == 1%}
+			  <div class="card-header d-flex align-items-center bg-info">
+                      <h3 class="h4">{{data}}</h3>
+              </div>
+		   {%endif%}
+		   {% if forloop.counter == 2%}
+		      <div class="content">
+			      <table border="0" name="report_list" class="table" >
+			      <thead>
+			      <tr>
+			       <th>Date</th>
+			       <th>Process</th>
+				   <th>Sub Process
+				   <th>Total Hours</th>
+				   <th>Comments</th>
+				   <th>Status</th>
+				   <th></th><th></th>
+				   </tr></thead>
+			      {%for process in data%}
+				  <tr>
+				  <td> {{process.Report_date}}</td>
+				  <td> {{process.Pro}}</td>
+				  <td> {{process.Spro}}</td>
+				  <td> {{process.No_hours}}</td>
+				  <td> {{process.Comments}}</td>
+				  <td> {{process.Reportstatus}}</td>
+				  {% if user.is_superuser %}
+				  	{% if process.Reportstatus == 'Waiting' %}
+					  <td value ="{{ process.pk }}" name="Approved" id="report_list">
+					  <a href="/reportstatus/{{process.pk}}/{{process.Empid}}/App" class="btn btn-success btn-sm">Approve
+					  </a></td>
+					  <td value ="{{ process.pk }}" name="Rejected" id="report_list">
+					  <a href="/reportstatus/{{process.pk}}/{{process.Empid}}/Rej" class="btn btn-danger btn-sm">Reject
+					  </a></td>
+					 {%endif%}
+				  {%endif%}
+				</tr>
+				  {%endfor%}
+				  </table>
+			  </div>
+		   {%endif%}
+		 {%endfor%}
+		{%endfor%}</div></div></section>
+		<br>
+		
+		{%if request.path  == '/reportlist/' %}
+		<a href="/editreports" class="btn btn-primary float-sm-right">
+	     	<span class="glyphicon glyphicon-edit"></span>
+	     		Edit Previous Report
+	   	</a>
+	   	{%endif%}
+	   	</div>
+{%endblock%}

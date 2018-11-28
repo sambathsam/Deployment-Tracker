@@ -1,0 +1,91 @@
+
+{% extends 'base.html'%}
+
+{% load static %}
+
+
+{% block content %}
+<div class="content-inner">
+	<header class="page-header">
+            <div class="container-fluid">
+              <h2 class="no-margin-bottom">Deployment Dashboard</h2>
+            </div>
+          </header>
+	<form method="post" class="form-horizontal" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+		  {% csrf_token %}
+           <input type="hidden" name="Empid" id="id_Empid" value="{{ user.Empid }}">
+		   <input type="hidden" name="Name" maxlength="50" id="id_Name" value="{{ user.EmpName }}">
+		   <input type="hidden" name="Primarytask" maxlength="50" id="id_Primarytask" value="{{ user.primary_project }}">
+          <!-- Dashboard Counts Section-->
+          <section class="dashboard-counts no-padding-bottom">
+            <div class="container-fluid">
+              <div class="row bg-white has-shadow">
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                  <div class="align-items-center">
+                  	<div class="title"><span>Report Date</span></div></div>
+					<div class="item d-flex"><input  type="date" class="form-control col-lg-11" name="Report_date"  id="id_Report_date" required></div></div>
+					
+                <div class="col-xl-3 col-sm-6">
+                  <div class="align-items-center">
+                  	<div class="title"><span>Project</span></div></div>
+					<div class="item d-flex"><select name ="Project_name" class="form-control col-sm-11" id="id_Project_name" required>
+						<option value="">---------</option>
+					      {% for quiz in pro%}
+						  <option value="{{quiz.pk}}">{{quiz.Projectname}}</option>
+						  {%endfor%}
+					</select></div></div>
+				<div class="col-xl-3 col-sm-6">
+                  <div class="align-items-center">
+                  	<div class="title"><span>Sub-Project</span></div></div>
+                  	<div class="item d-flex"><select name ="Subproject_name" class="form-control col-sm-11" id="id_Subproject_name" required>
+						<option value="">---------</option>
+					</select></div></div>
+				<div class="col-xl-3 col-sm-6">
+                  <div class="align-items-center">
+                  	<div class="title"><span>Task</span></div></div>
+                  	<div class="item d-flex"><select  name="Task" class="form-control col-sm-11" id="id_Task">
+					  <option value="" selected>-------------</option>
+					  <option value="Scripting">Scripting</option>
+					  <option value="Re-scripting">Rescripting</option>
+					  <option value="Analysis">Analysis</option>
+					  <option value="Manual">Manual</option>
+					  <option value="Tool Monitoring">Tool Monitoring</option>
+					  <option value="Meeting">Meeting</option>
+					  <option value="URL Identification">URL Identification</option>
+					  <option value="Duplicate Identification">Duplicate Identification</option>
+					  <option value="Hotelcode Identification">Hotelcode Identification</option>
+					</select></div></div>
+                </div></div></section>
+                <br>
+                <div class="form-group">        
+		      <div class="col-sm-offset-2 col-sm-10">
+		        <button type="submit" id="start" class="btn btn-primary btn-md">Start</button>
+		      </div></div></form>
+		      
+			  {% include 'report/includes/partial_log_list.html' %}
+			  </div>
+			   
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $("#id_Project_name").change(function () {
+      var url = $("#DetailForm").attr("data-subpro-url");  
+      var projectId = $(this).val();  
+      $.ajax({                       
+        url: url,                    
+        data: {
+          'Project_name': projectId      
+        },
+        success: function (data) {  
+          $("#id_Subproject_name").html(data); 
+        }
+      });
+    });
+  </script>
+<script>
+function myFunction() {
+    document.getElementById("start").disabled = true;
+}
+</script>
+
+{%endblock%}

@@ -1,0 +1,55 @@
+{% load widget_tweaks %}
+	
+	<form method="post" action="{% url 'report_create' %}" class="js-report-create-form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+	  {% csrf_token %}
+	  {% if form.errors %}
+		    {% for field in form %}
+		        {% for error in field.errors %}
+		            <div class="alert alert-danger">
+		                <strong>{{ error|escape }}</strong>
+		            </div>
+		        {% endfor %}
+		    {% endfor %}
+		    {% for error in form.non_field_errors %}
+		        <div class="alert alert-danger">
+		            <strong>{{ error|escape }}</strong>
+		        </div>
+		    {% endfor %}
+		{% endif %}
+	  <div class="modal-header">
+	    <h4 class="modal-title">Create a new report</h4>
+	    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	      <span aria-hidden="true">&times;</span> 
+	    </button>
+	    {% include 'report/messages.html' %}
+	  </div>
+	  <div class="modal-body">
+		  <input type="hidden" name="Empid" id="id_Empid" value="{{ user.Empid }}">
+		  <input type="hidden" name="Name" maxlength="50" id="id_Name" value="{{ user.EmpName }}">
+		  <input type="hidden" name="Primarytask" maxlength="50" id="id_Primarytask" value="{{ user.primary_project }}">	
+	      <input type="hidden" name="Team" maxlength="50" id="id_Team" value="{{ user.Team }}">
+	      {% include 'report/includes/partial_report_form.html' %}
+	  </div>
+	  <div class="modal-footer">
+	    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	    <button type="submit" class="btn btn-primary" >Create Report</button>
+	  </div>
+	</form>
+	
+
+<script type="text/javascript">
+    $("#id_Project_name").change(function () {
+      var url = $("#DetailForm").attr("data-subpro-url");  
+      var projectId = $(this).val();  
+      $.ajax({                       
+        url: url,                    
+        data: {
+          'Project_name': projectId      
+        },
+        success: function (data) {  
+          $("#id_Subproject_name").html(data); 
+        }
+      });
+    });
+  </script>
+

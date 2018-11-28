@@ -1,0 +1,121 @@
+{% extends 'base.html'%} 
+
+{% block content %}
+<div class="col-lg-12">
+ <div class="card">
+   <div class="card-header d-flex align-items-center">
+     <h3 class="h4">Edit User</h3>
+   </div>
+  {% if user.is_superuser %} 
+  <div class="card-body">
+	  <form method="post" class="form-horizontal" enctype="multipart/form-data">
+	  {% csrf_token %}
+		  {% if form.errors %}
+			    {% for field in form %}
+			        {% for error in field.errors %}
+			            <div class="alert alert-danger">
+			                <strong>{{ error|escape }}</strong>
+			            </div>
+			        {% endfor %}
+			    {% endfor %}
+			    {% for error in form.non_field_errors %}
+			        <div class="alert alert-danger">
+			            <strong>{{ error|escape }}</strong>
+			        </div>
+			    {% endfor %}
+			{% endif %}
+                         <!--{{form.as_p}}-->
+          <div class="form-group row">
+		<label for="id_EmpName" class="col-sm-2 form-control-label">EmpName</label> 
+		<div class="col-sm-7">
+		<input type="text" class="form-control" name="EmpName" id="id_EmpName" required maxlength="250" value="{{form.EmpName.value}}" >
+		</div></div>
+		<div class="form-group row">
+		<label for="id_Empid" class="col-sm-2 form-control-label">Empid</label>
+		<div class="col-sm-7">
+		 <input type="number" class="form-control" name="Empid" id="id_Empid" required value="{{form.Empid.value}}">
+		</div></div>
+        <div class="form-group row">
+		<label for="id_email" class="col-sm-2 form-control-label">Email </label> 
+	    <div class="col-sm-7"><input type="email" class="form-control" name="email" id="id_email" maxlength="254" required value="{{form.email.value}}">
+		</div></div>
+		<div class="form-group row">
+		<label for="id_date_join" class="col-sm-2 form-control-label">Date of join</label>
+		<div class="col-sm-5"><input type="date" class="form-control" name="date_join" id="id_date_join"  required>
+		</div> {{form.date_join.value}}</div>
+		<div class="form-group row">
+		<label for="id_Team" class="col-sm-2 form-control-label">Team </label> 
+		<div class="col-sm-7">
+			<select class="form-control" name="Team" id="id_Team required">
+			{% for teams in Teams%}
+                <option value= "{{teams}}" selected>{{teams}}</option>
+             {%endfor%}
+		</select></div></div>
+        <div class="form-group row">
+		<label for="id_Designation" class="col-sm-2 form-control-label">Designation</label> 
+		<div class="col-sm-7"><select class="form-control" name="Designation" id="id_Designation" required>
+                <option value= "" selected disable hidden>------</option>
+                <option value= "Python Developer">Python Developer</option>
+			    <option value= "Java Developer">Java Developer</option>
+                <option value= "Process Associate">Process Associate</option>
+                <option value= "Team Lead">Team Lead</option>
+                <option value= "Manager">Manager</option>
+                <option value= "Python Developer Trainee">Python Developer Trainee</option>
+				<option value= "Java Developer Trainee">Java Developer Trainee</option>
+                <option value= "Process Associate Trainee">Process Associate Trainee</option>
+                </select>
+		</div></div>
+		<div class="form-group row">
+		<label for="id_primary_process" class="col-sm-2 form-control-label">Primary Project</label> 
+		<div class="col-sm-7"><select class="form-control" name="primary_process" id="id_primary_process" required>
+                <option value= "" selected disable hidden>------</option>
+                {% for quiz in Pro%}
+			     <option value="{{quiz.Projectname}}">{{quiz.Projectname}}</option>
+			    {%endfor%}
+                </select>
+		</div></div>
+        <div class="form-group row">
+		<label for="id_primary_project" class="col-sm-2 form-control-label">Primary Task</label>
+		<div class="col-sm-7"><select class="form-control" name="primary_project" id="id_primary_project" required>
+                    	<option value= "" selected disable hidden>------</option>
+				        <option value= "Python Scripting">Python Scripting</option>
+						<option value= "Java Scripting">Java Scripting</option>
+				        <option value= "QA & Deleviery">QA & Delivery</option>
+                        <option value= "Mapping">Mapping</option>
+                        <option value= "Tool Monitoring">Tool Monitoring and Delivery</option>
+                        <option value= "Manual">Manual</option>       
+                 </select>
+		</div></div>
+            <div class="form-group row">
+			<label for="id_is_superuser" class="col-sm-2 form-control-label">is Superuser</label> 
+			<div class="col-sm-7">
+			<input type="checkbox"  name="is_superuser" id="id_is_superuser"> 
+			</div></div> 
+			<div class="form-group row">
+		  	<label for="id_Empimage" class="col-sm-2 form-control-label">User Image</label> 
+		  	<div class="col-sm-7"><input type="file" class="form-control" name="Empimage" id="id_Empimage">
+			</div></div>
+			<div class="form-group row">
+		  	<label for="id_username" class="col-sm-2 form-control-label">Username</label> 
+		  	<div class="col-sm-7"><input type="text" class="form-control" name="username" id="id_username" required  maxlength="150" placeholder = "Username with @anddomainname of user's mailid" value="{{form.username.value}}">
+			</div></div>
+			<div class="form-group row">
+			<label for="id_password1" class="col-sm-2 form-control-label">Password:</label>
+			<div class="col-sm-7"><input type="password" class="form-control" name="password1" id="id_password1" required placeholder = "Username along with Empid without space"> 
+			<span class="help-block">Password must be contain 8 characters</span>
+			</div></div>
+			<div class="form-group row">
+			<label for="id_password2" class="col-sm-2 form-control-label">Password confirmation:</label>
+			<div class="col-sm-7"><input type="password" class="form-control" name="password2" id="id_password2" required placeholder = "Username along with Empid without space">
+			</div></div>
+			<div class="row">
+			 <button type="submit"  class="btn btn-success">Update</button></div>
+	  	</form>
+	</div></div></div>
+  {% elif user.is_active %}
+	<h1>You are customer user</h1>
+	{% else %}
+<p> you are not superuser login as supper user to create users</p>
+<p><a href="{% url 'login' %}"> Log In </a></p>
+{% endif %}
+{%endblock%}

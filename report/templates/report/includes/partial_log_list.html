@@ -1,0 +1,48 @@
+<form method="post">{%csrf_token%}
+<table class="table" id="report-table">
+    <thead>
+      <tr>
+        <th>Reportdate</th>
+        <th>Project</th>
+        <th>Subproject</th>
+        <th>Start Time</th>
+        <th>Comments</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+	{% for report in reports %}
+	  <tr>
+	    <td>{{ report.Report_date }}</td>
+	    <td>{{ report.Project_name }}</td>
+	    <td>{{ report.Subproject_name }}</td>
+	    <td>{{ report.start_time }}</td>
+	    {% if report.Comments %}
+	    	{% if 'On Hold' in report.Comments %}
+	    		<td>{{ report.Comments }}</td>
+	    		<td value ="{{ report.pk }}" name="Resume" id="report-table"><a href="/logresume/{{ report.pk }}" class="btn btn-warning btn-sm">
+	    		Resume</a></td>
+	    	{% else %}
+	    	   <td>{{ report.Comments }}</td>
+	    	   <td>{{ report.Reportstatus }}</td>
+	    	{%endif%}
+	    {% else %}
+	    	<td><input class="form-control" onfocus="myFunction()" autofocus type="text" name="Comments_{{ report.pk }}" required maxlength="500" id="id_Comments"></td>
+	    <td>
+	      <button type="submit" class="btn btn-success btn-sm">             
+	        <span class="glyphicon glyphicon-pencil"></span> Complete
+	      </button>
+	    </td>
+	    <td value ="{{ report.pk }}" name="Hold" id="report-table"><a href="/loghold/{{ report.pk }}" class="btn btn-warning btn-sm">
+	    Hold</a></td>
+	    {%endif%}
+	    
+	  </tr>
+	{% empty %}
+	  <tr>
+	    <td colspan="8" class="text-center bg-warning">No Report</td>
+	  </tr>
+	{% endfor %}
+	 </tbody></table></div>
+	</form>
+	

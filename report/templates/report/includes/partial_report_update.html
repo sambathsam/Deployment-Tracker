@@ -1,0 +1,48 @@
+{% load widget_tweaks %}
+<form method="post" action="{% url 'report_update' form.instance.pk %}" id="DetailForm"  class="js-report-update-form"  data-subpro-url="/hr/ajax/load-subpro/">
+  {% csrf_token %}
+  {% include 'report/messages.html' %}
+  {% if form.errors %}
+	    {% for field in form %}
+	        {% for error in field.errors %}
+	            <div class="alert alert-danger">
+	                <strong>{{ error|escape }}</strong>
+	            </div>
+	        {% endfor %}
+	    {% endfor %}
+	    {% for error in form.non_field_errors %}
+	        <div class="alert alert-danger">
+	            <strong>{{ error|escape }}</strong>
+	        </div>
+	    {% endfor %}
+	{% endif %}
+  <div class="modal-header">
+    <h4 class="modal-title">Update Report</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="Myfunction()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+	 {{form.as_p}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Myfunction()">Close</button>
+    <button type="submit" class="btn btn-primary" >Update report</button>
+  </div>
+</form>
+
+<script type="text/javascript">
+    $("#id_Project_name").change(function () {
+      var url = $("#DetailForm").attr("data-subpro-url");  
+      var projectId = $(this).val();  
+      $.ajax({                       
+        url: url,                    
+        data: {
+          'Project_name': projectId      
+        },
+        success: function (data) {  
+          $("#id_Subproject_name").html(data); 
+        }
+      });
+    });
+  </script>
