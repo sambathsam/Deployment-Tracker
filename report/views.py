@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.http.response import HttpResponseRedirect
 import datetime
 from datetime import timedelta
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 from django.db.models import Sum
 from django.contrib import messages
@@ -15,9 +16,24 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 import re,json,xlwt
 from django.http import JsonResponse,HttpResponse
-from report.models import Team
+from report.models import Team,Task,Designation
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('create_logs')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'registration/change_password.html', {'form': form})
 # class SignUp(generic.CreateView):
 #     form_class    = CustomUserCreationForm
 #     success_url   = reverse_lazy('userlist')
@@ -33,7 +49,6 @@ def SignUp(request):
             team_f = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
             pro = Project.objects.filter(Team_name=team_f)
         if request.method =="POST":
-            print(request.POST,request.FILES)
             form = CustomUserCreationForm(request.POST,request.FILES)
             if form.is_valid():
                 form.save()
@@ -42,8 +57,9 @@ def SignUp(request):
                 print("invalid")
         else:
             form = CustomUserCreationForm()
-        return render(request, 'registration/signup.html',{'form':form,'Teams':team_name,'Pro':pro})
-    
+        return render(request, 'registration/signup.html',{'form':form,'Teams':team_name,'Pro':pro,'task':Task.objects.all(),'title':Designation.objects.all()})
+    else:
+        return redirect('login')
 def HomePageView(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('login')
@@ -59,6 +75,14 @@ def UserList(request):
         queryset = CustomUser.objects.all()
     else:
         queryset = CustomUser.objects.filter(Team=request.user.Team)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(queryset, 10)
+    try:
+        queryset = paginator.page(page)
+    except PageNotAnInteger:
+        queryset = paginator.page(1)
+    except EmptyPage:
+        queryset = paginator.page(paginator.num_pages)
     print(request.user.Team)
     return render(request,'users/usrlist.html',{'emp_list':queryset})
 
@@ -144,10 +168,14 @@ def edit_report(request):
         if request.method=='POST':
             if (request.POST['show_date']) !='':
                 print(request.POST['show_date'])
+                date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['show_date']),'%Y-%m-%d')
+                if date_d:
+                    print('here')
+                    return HttpResponse("<h2>Exceeded More than 7 days to Edit report for given date.</h2><br><h3>Reload current page to back</h3>")
                 reports = Report.objects.filter(Empid=request.user.Empid,Report_date=request.POST['show_date'],status=2)
                 return render(request,'report/edit_report.html', {'reports': reports})
             else:
-                return HttpResponse("<h2> Please select date before search")
+                return HttpResponse("<h2> Please select date before search</h2>")
         else:
             return render(request,'report/edit_report.html',{})
     else:
@@ -331,14 +359,13 @@ def edit_user(request,eid):
         result_set = get_object_or_404(CustomUser, Empid=eid)
         if request.method =="POST":
             form = CustomUserCreationForm(request.POST,request.FILES, instance=result_set)
-            print(request.POST,request.FILES)
             if form.is_valid():
                 form.save()
                 return redirect('userlist')
             else:
                 print("invalid")
         form = CustomUserCreationForm(instance=result_set)
-        return render(request, 'users/edit_user.html',{'form':form,'Teams':(team_name),'Pro':pro})
+        return render(request, 'users/edit_user.html',{'form':form,'Teams':(team_name),'Pro':pro,'task':Task.objects.all(),'title':Designation.objects.all()})
     
 def get_duration(duration):
     hours = int(duration / 3600)
@@ -361,6 +388,7 @@ def hour_calc(report):
     hr_format = datetime.timedelta(hours = int(str(t_hr).split('.')[0]), minutes=int(str(t_hr).split('.')[1])).total_seconds()
     hr_format = float(re.sub(r":",".",str(get_duration(hr_format))))
     return hr_format
+
 def log_resume(request,pk):
     print("here log resume")
     report = get_object_or_404(Report, pk=int(pk))
@@ -385,6 +413,7 @@ def logpage(request):
     form  = ReportForm()
     if request.method == 'POST':
         if 'Comments' in str(request.POST):
+            print(request.POST)
             id_r = re.search(r'Comments_(\d+)', str(request.POST)).group(1)
             report = get_object_or_404(Report, pk=int(id_r))
             request.POST = request.POST.copy()
@@ -393,14 +422,14 @@ def logpage(request):
             report.End_time = request.POST['End_time'];report.status = 1
             report.No_hours = hour_calc(report)
             report.save()
-            reports = Report.objects.filter(Empid=request.user.Empid,dtcollected=datetime.date.today()).order_by('Report_date')
+            reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(status=0)).order_by('Report_date')
             return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates})
         else:
             request = datainsert(request)
             form = ReportForm(request.POST)
             if form.is_valid():
                 form.save()
-            reports = Report.objects.filter(Empid=request.user.Empid,dtcollected=datetime.date.today()).order_by('Report_date')
+            reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(status=0)).order_by('Report_date')
             return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates})
     else:
         return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates})
@@ -485,7 +514,6 @@ def export_users_xls(request):
         else:
             teamreport = None
         if request.method=="POST":
-            print(request.POST)
             project_re = request.POST['Project_name'];subpro_re  = request.POST['Subproject_name']
     #         Team = request.POST['Team'];overall = request.POST['overall']
             if 'Team' in  str(request.POST):
@@ -535,7 +563,7 @@ def export_users_xls(request):
             font_style = xlwt.XFStyle()
             for row in rows:
                 lt = list(row)
-                lt[3]=str(row[3])
+                lt[4]=str(row[4])
                 if row[6]!=None:
                     lt[6]=str(Project.objects.get(id=int(row[6])))
                 if row[7]!=None:

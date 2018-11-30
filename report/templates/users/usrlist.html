@@ -52,6 +52,30 @@
 	    {% endfor %}
 	    </tbody>
     </table>
+    {% if emp_list.has_other_pages %}
+    <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+	  <ul class="nav">
+	    {% if emp_list.has_previous %}
+	      <li><a href="?page={{ emp_list.previous_page_number }}">&laquo;</a></li>
+	    {% else %}
+	      <li class="disabled"><span>&laquo;</span></li>
+	    {% endif %}
+	    {% for i in emp_list.paginator.page_range %}
+	      {% if users.number == i %}
+	        <li class="active ><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+	      {% else %}
+	        <li><a href="?page={{ i }}">&nbsp;{{ i }}&nbsp;</a></li>
+	      {% endif %}
+	    {% endfor %}
+	    {% if emp_list.has_next %}
+	      <li><a href="?page={{ emp_list.next_page_number }}">&raquo;</a></li>
+	    {% else %}
+	      <li class="disabled"><span>&raquo;</span></li>
+	    {% endif %}
+	  </ul></div></nav>
+	{% endif %}
+	<br>
 	    <div class="col-xs-12 col-xs-offset-0 col-sm-offset-3 form-actions text-center">
 	     <a href="{% url 'signup' %}" class="btn btn-info btn-md">
 	     <span class="glyphicon glyphicon-user"></span> Add User

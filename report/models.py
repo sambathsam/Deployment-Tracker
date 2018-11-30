@@ -38,7 +38,6 @@ class Project(models.Model):
 class Subproject(models.Model):
     Project_name    = models.ForeignKey(Project, on_delete=models.CASCADE)
     Subproject_name = models.CharField(max_length=30)
-
     def __str__(self):
         return self.Subproject_name
     
@@ -78,7 +77,16 @@ class Report(models.Model):
 class datesofmonth(models.Model):
     id = models.AutoField(primary_key=True)
     weekday = models.DateField()
-    
+class Designation(models.Model):
+    id = models.AutoField(primary_key=True)
+    Title = models.CharField(max_length=100,default='',blank=True,null=True)
+    def __str__(self):
+        return self.Title
+class Task(models.Model):
+    id   = models.AutoField(primary_key=True)
+    task = models.CharField(max_length=100,default='',blank=True,null=True)
+    def __str__(self):
+        return self.task
 class Review(models.Model):
     Name  = models.CharField(max_length=250,default='', blank=True)
     EmpID = models.IntegerField(default=0, blank=True)
@@ -96,4 +104,5 @@ class Review(models.Model):
     def __str__(self):
         return self.Name
     
+
     

@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^reportstatus/(?P<rid>\d+)/(?P<eid>\d+)/(?P<status>\w+)$', views.reportstatus, name='reportstatus'),
     url(r'^export/$', views.export_users_xls, name='export_users_xls'),
     url(r'^attendence/$', views.attendence, name='attendence_xls'),
+    url(r'^password/$', views.change_password, name='change_password'),
     ]
 
