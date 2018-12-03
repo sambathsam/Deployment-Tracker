@@ -29,26 +29,41 @@ def insert(date):
 
 # for day in calendar.monthcalendar(2018, 10):
 #     print day
-for day in calendar.monthcalendar(datetime.datetime.now().year, datetime.datetime.now().month):
-    if day[0] != 0:
-        if len(str(day[0])) == 1:
-            day[0]= "0"+str(day[0])
-        insert(re.sub(r"\d+$", str(day[0]), str(datetime.date.today())))
-    if day[1] != 0:
-        if len(str(day[1])) == 1:
-            day[1]= "0"+str(day[1])
-        insert(re.sub(r"\d+$", str(day[1]), str(datetime.date.today())))
-    if day[2]!= 0:
-        if len(str(day[2])) == 1:
-            day[2]= "0"+str(day[2])
-        insert(re.sub(r"\d+$", str(day[2]), str(datetime.date.today())))
-    if day[3] != 0:
-        if len(str(day[3])) == 1:
-            day[3]= "0"+str(day[3])
-        insert(re.sub(r"\d+$", str(day[3]), str(datetime.date.today())))
-    if day[4] != 0:
-        if len(str(day[4])) == 1:
-            day[4]= "0"+str(day[4])
-        insert(re.sub(r"\d+$", str(day[4]), str(datetime.date.today())))
+def weekdays(yr,mnt):
+    print(yr,mnt)
+    for day in calendar.monthcalendar(int(yr), int(mnt)):
+        if day[0] != 0:
+            if len(str(day[0])) == 1:
+                day[0]= "0"+str(day[0])
+            insert(str(yr)+'-'+str(mnt)+'-'+str(day[0]))
+        if day[1] != 0:
+            if len(str(day[1])) == 1:
+                day[1]= "0"+str(day[1])
+            insert(str(yr)+'-'+str(mnt)+'-'+str(day[1]))
+        if day[2]!= 0:
+            if len(str(day[2])) == 1:
+                day[2]= "0"+str(day[2])
+            insert(str(yr)+'-'+str(mnt)+'-'+str(day[2]))
+        if day[3] != 0:
+            if len(str(day[3])) == 1:
+                day[3]= "0"+str(day[3])
+            insert(str(yr)+'-'+str(mnt)+'-'+str(day[3]))
+        if day[4] != 0:
+            if len(str(day[4])) == 1:
+                day[4]= "0"+str(day[4])
+            insert(str(yr)+'-'+str(mnt)+'-'+str(day[4]))
+
+
+today = datetime.date.today()
+first = today.replace(day=1)
+lastMonth = first - datetime.timedelta(days=1)
+mnt = lastMonth.strftime("%m")
+yr = lastMonth.strftime("%Y")
+print (mnt,yr)
+weekdays(yr,mnt)
+
+yr  = datetime.datetime.now().year
+mnt = datetime.datetime.now().month
+weekdays(yr,mnt)
 
 
