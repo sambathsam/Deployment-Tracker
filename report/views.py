@@ -409,7 +409,7 @@ def logpage(request):
     team = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
     data1 = Project.objects.filter(Team_name=team)
     newdict,missdates = pendingdate(request,request.user.Empid)
-    reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(status=0)).order_by('Report_date')
+    reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(Empid=request.user.Empid,status=0)).order_by('Report_date')
     form  = ReportForm()
     if request.method == 'POST':
         if 'Comments' in str(request.POST):
@@ -422,14 +422,14 @@ def logpage(request):
             report.End_time = request.POST['End_time'];report.status = 1
             report.No_hours = hour_calc(report)
             report.save()
-            reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(status=0)).order_by('Report_date')
+            reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(Empid=request.user.Empid,status=0)).order_by('Report_date')
             return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates})
         else:
             request = datainsert(request)
             form = ReportForm(request.POST)
             if form.is_valid():
                 form.save()
-            reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(status=0)).order_by('Report_date')
+            reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(Empid=request.user.Empid,status=0)).order_by('Report_date')
             return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates})
     else:
         return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates})
