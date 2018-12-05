@@ -153,8 +153,9 @@ def pendingdate(request,empid):
     datadict = serializers.serialize("json", datadict)
     for fields in json.loads(datadict):
         fields['fields']['pk']=fields['pk']
-        if fields['fields']['Project_name'] != None and fields['fields']['Subproject_name'] !='':
+        if fields['fields']['Project_name'] != None:
             fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
+        if fields['fields']['Subproject_name'] !=None:
             fields['fields']['Spro']=(Subproject.objects.filter(id=fields['fields']['Subproject_name']).values('Subproject_name'))[0]['Subproject_name']
         if (str(fields['fields']['Report_date'])) in newdict:
             newdict[str(fields['fields']['Report_date'])].append(fields['fields'])
