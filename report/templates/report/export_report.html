@@ -23,11 +23,17 @@
 				</select></div>
 		<br></br>
 		<div class="form-group row" id="sdd">
-			<label for="id_Report_date" class="form-control-label col-sm-2">Weekly Report :</label> 
-			<input type="date" name="start_date" class="form-control col-sm-2" id="id_start_date">&nbsp;to&nbsp;
-			<input type="date" name="end_date" class="form-control col-sm-2" id="id_end_date"></div>
+			<label for="id_Report_date" class="form-control-label col-sm-2">Date Range :</label> 
+			<input type="date" name="start_date" class="form-control col-sm-2" required id="id_start_date">&nbsp;to&nbsp;
+			<input type="date" name="end_date" class="form-control col-sm-2" required id="id_end_date"></div>
+			<div class="form-group">        
+	        <div class="col-sm-offset-2 col-sm-10">
+	        <button type="submit" class="btn btn-primary glyphicon glyphicon-print">Export</button>
+	      </div>
+	    </div></form>
 		<hr>
 		{%if teamreport%}
+		<form method="post" class="form-horizontal" id="overall_report">{% csrf_token%}
 			<div class="form-group row" id="sdd">
 			<label for="id_Report_date" class="form-control-label col-sm-2">Team Report :</label> 
 			<select class="form-control col-sm-2" name="Team" id="id_Team required">
@@ -39,16 +45,18 @@
 			&nbsp;&nbsp;Or
 			<label for="id_overall" class="col-sm-2 form-control-label">Over All</label> 
 			<input type="checkbox"  name="overall" id="id_overall"> 
-			</div><hr>
-		{%endif%}
-		
-		<br></br>
-		<div class="form-group">        
-	      <div class="col-sm-offset-2 col-sm-10">
+			</div>
+			<div class="form-group row" id="sdd">
+			<label for="id_Report_date" class="form-control-label col-sm-2">Date Range :</label> 
+			<input type="date" name="start_date" class="form-control col-sm-2" required id="id_start_date">&nbsp;to&nbsp;
+			<input type="date" name="end_date" class="form-control col-sm-2" required id="id_end_date"></div>
+			<div class="form-group">        
+	        <div class="col-sm-offset-2 col-sm-10">
 	        <button type="submit" class="btn btn-primary glyphicon glyphicon-print">Export</button>
 	      </div>
 	    </div>
-	</form></div></div></div>
+	   </form><hr>
+	   {%endif%}</div></div></div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     $("#id_Project_name").change(function () {

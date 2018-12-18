@@ -3,30 +3,35 @@
 {% if user.is_superuser %} 
 
 <div class="content-inner">
-	<header class="page-header">
-            <div class="container-fluid">
-              <h2 class="no-margin-bottom">Users List</h2>
-            </div>
-          </header>
+     <nav class="navbar navbar-light bg-light">
+	  	<div class="container-fluid">
+	      <div class="navbar-header">
+	    	<h2 style="text-align: left;" class="no-margin-bottom text-dark">Users List</h2>
+	      </div>
+	  <div class="navbar-header navbar-right">
+	     <ul class="nav navbar-nav navbar-right">
+	     	<i class="fa fa-search" style="color:blue">&nbsp;<input type="text"  id="myInput" onkeyup="myFunction()" placeholder="Search for names.." class="fa fa-search navbar-right" title="Type in a name"></i>
+	     </ul></div></div>
+  	 </nav>
   <div class="table-responsive"> 
+  
   {% if emp_list %}
-  <from method = "POST">
-  	<table class="table table-striped table-hover">
+  <form method = "POST">
+  	<table id="userlist" class="table order-column hover">
       <thead>
         <tr>
-          <th></th>
           <th>Employee Name</th>
 		  <th>Employee Id</th>
 		  <th>Primary Project</th>
 		  <th>Team</th>
 		  <th>Date Of Join</th>
+		  
 		</tr>
       </thead>
      <tbody id="myTable">
 	    {% for emp in emp_list %}
                {%if not emp.username == 'Admin'%}
 	        <tr>
-	        <td></td>
 	        <td>{{ emp.EmpName |title }}</td>
 	        <td>{{ emp.Empid }}</td>
 	        <td>{{ emp.primary_project }}</td>
@@ -83,8 +88,28 @@
 	  </div>
     </from>
   </div></div>
+  <script>
+	function myFunction() {
+	  var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("myInput");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("userlist");
+	  tr = table.getElementsByTagName("tr");
+	  for (i = 0; i < tr.length; i++) {
+	    td = tr[i].getElementsByTagName("td")[0];
+	    if (td) {
+	      txtValue = td.textContent || td.innerText;
+	      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+	        tr[i].style.display = "";
+	      } else {
+	        tr[i].style.display = "none";
+	      }
+	    }       
+	  }
+	}
+	</script>
   {% else %}
-    <p>There are no users in the library.</p>
+    <p>There are no users.</p>
   {% endif %}  
  {% else %}
     <h1>You are not permited to view list Go back {{user.username}} </h1>

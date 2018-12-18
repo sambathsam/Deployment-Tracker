@@ -1,4 +1,9 @@
 {% load widget_tweaks %}
+<link rel=”stylesheet” href=”//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css”>
+<link rel=”stylesheet” href=”/resources/demos/style.css”>
+<script src=”https://code.jquery.com/jquery-1.12.4.js”></script>
+<script src=”https://code.jquery.com/ui/1.12.1/jquery-ui.js”></script>
+
 <form method="post" action="{% url 'report_update' form.instance.pk %}" id="DetailForm"  class="js-report-update-form"  data-subpro-url="/hr/ajax/load-subpro/">
   {% csrf_token %}
   {% include 'report/messages.html' %}
@@ -23,14 +28,21 @@
     </button>
   </div>
   <div class="modal-body">
-	 {{form.as_p}}
+  	<table>
+  	
+  	{{form.as_table}}
+	 </table>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Myfunction()">Close</button>
     <button type="submit" class="btn btn-primary" >Update report</button>
   </div>
 </form>
-
+<script type="text/javascript">
+$( function() {
+$( "#id_Report_date").datepicker();
+} );
+</script>
 <script type="text/javascript">
     $("#id_Project_name").change(function () {
       var url = $("#DetailForm").attr("data-subpro-url");  

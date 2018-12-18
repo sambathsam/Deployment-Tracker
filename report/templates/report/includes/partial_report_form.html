@@ -20,7 +20,8 @@
 	
 	<div class="form-group row">
 		<label for="id_Project_name" class="col-sm-5 form-control-label">Project name</label> 
-		<div class="col-sm-6"><select class="form-control" name="Project_name"  id="id_Project_name">
+		<div class="col-sm-6">
+		<select class="form-control" name="Project_name"  id="id_Project_name">
 		  <option value="" selected>---------</option>
 		  {% for quiz in data%}
 		  <option value="{{quiz.pk}}">{{quiz.Projectname}}</option>

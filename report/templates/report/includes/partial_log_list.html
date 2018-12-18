@@ -28,7 +28,7 @@
 	    	{%endif%}
 	    {% else %}
 	    <form method="post">{%csrf_token%}
-	    	<td><input class="form-control" onfocus="myFunction()" autofocus type="text" name="Comments_{{ report.pk }}" required maxlength="500" id="id_Comments"></td>
+	    	<td><input class="form-control" onfocus="myFunction()" autofocus type="text" name="Comments_{{ report.pk }}" required maxlength="500" pattern=".*\S+.*" id="id_Comments"></td>
 	    <td>
 	      <button type="submit" class="btn btn-success btn-sm">             
 	        <span class="glyphicon glyphicon-pencil"></span> Complete

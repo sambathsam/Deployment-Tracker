@@ -54,12 +54,16 @@
 				  <td> {{process.Reportstatus}}</td>
 				  {% if user.is_superuser %}
 				  	{% if process.Reportstatus == 'Waiting' %}
-					  <td value ="{{ process.pk }}" name="Approved" id="report_list">
-					  <a href="/reportstatus/{{process.pk}}/{{process.Empid}}/App" class="btn btn-success btn-sm">Approve
-					  </a></td>
-					  <td value ="{{ process.pk }}" name="Rejected" id="report_list">
-					  <a href="/reportstatus/{{process.pk}}/{{process.Empid}}/Rej" class="btn btn-danger btn-sm">Reject
-					  </a></td>
+				  		{% if process.Comments != 'On Hold' %}
+				  		{% if process.Comments != None %}
+						  <td value ="{{ process.pk }}" name="Approved" id="report_list">
+						  <a href="/reportstatus/{{process.pk}}/{{process.Empid}}/App" class="btn btn-success btn-sm">Approve
+						  </a></td>
+						  <td value ="{{ process.pk }}" name="Rejected" id="report_list">
+						  <a href="/reportstatus/{{process.pk}}/{{process.Empid}}/Rej" class="btn btn-danger btn-sm">Reject
+						  </a></td>
+						   {%endif%}
+						 {%endif%}
 					 {%endif%}
 				  {%endif%}
 				</tr>
@@ -67,15 +71,16 @@
 				  </table>
 			  </div>
 		   {%endif%}
+		  
 		 {%endfor%}
+		 {% empty %}
+		  <tr>
+		    <div class="card-header d-flex align-items-center bg-info">
+	                      <h3 class="h4">No Reports</h3>
+	        </div>
+		  </tr>
 		{%endfor%}</div></div></section>
 		<br>
 		
-		{%if request.path  == '/reportlist/' %}
-		<a href="/editreports" class="btn btn-primary float-sm-right">
-	     	<span class="glyphicon glyphicon-edit"></span>
-	     		Edit Previous Report
-	   	</a>
-	   	{%endif%}
 	   	</div>
 {%endblock%}

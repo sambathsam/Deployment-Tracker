@@ -9,7 +9,7 @@
 	<header class="page-header">
 			 <div class="container-fluid">
 			{%if request.path  != '/reviewlist/' %}
-				<h4 align="left">{{usrname.EmpName | title}}'s Review's</h4>
+				<h4 align="left">{{usrname.EmpName | title}} Review's</h4>
 			{%else%}
 				<h2 class="no-margin-bottom">My Reviews</h2>
 			{%endif%}</div>
@@ -58,6 +58,12 @@
 		  </div>
 	   {%endif%}
 	 {%endfor%}
+	 {% empty %}
+		  <tr>
+		    <div class="card-header d-flex align-items-center bg-info">
+	                      <h3 class="h4">No Reviews</h3>
+	        </div>
+		  </tr>
 	{%endfor%}</div></div></section>
 	<br>
 	</div>

@@ -3,8 +3,10 @@
 
 {% load static %}
 
-
 {% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
 <div class="content-inner">
 	<header class="page-header">
             <div class="container-fluid">
@@ -15,6 +17,7 @@
 		  {% csrf_token %}
            <input type="hidden" name="Empid" id="id_Empid" value="{{ user.Empid }}">
 		   <input type="hidden" name="Name" maxlength="50" id="id_Name" value="{{ user.EmpName }}">
+		   <input type="hidden" name="Team" maxlength="50" id="id_Team" value="{{ user.Team }}">
 		   <input type="hidden" name="Primarytask" maxlength="50" id="id_Primarytask" value="{{ user.primary_project }}">
           <!-- Dashboard Counts Section-->
           <section class="dashboard-counts no-padding-bottom">
@@ -24,7 +27,7 @@
                 <div class="col-xl-3 col-sm-6">
                   <div class="align-items-center">
                   	<div class="title"><span>Report Date</span></div></div>
-					<div class="item d-flex"><input  type="date" class="form-control col-lg-11" name="Report_date"  id="id_Report_date" required></div></div>
+					<div class="item d-flex"><input  type="date" class="datepicker"  name="Report_date"  id="id_Report_date" readonly="true"></div></div>
 					
                 <div class="col-xl-3 col-sm-6">
                   <div class="align-items-center">
@@ -60,12 +63,26 @@
                 <br>
                 <div class="form-group">        
 		      <div class="col-sm-offset-2 col-sm-10">
-		        <button type="submit" id="start" class="btn btn-primary btn-md">Start</button>
+		        <button type="submit" id="start" class="btn btn-primary btn-md" onClick="this.form.submit(); this.disabled=true; this.value='Sending…'; ">Start</button>
 		      </div></div></form>
-		      
 			  {% include 'report/includes/partial_log_list.html' %}
 			  </div>
-			   
+			  
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>		  
+<script type="text/javascript">
+$("#id_Report_date").change(function () {
+	var FromEndDate = new Date();
+	alert(FromEndDate);
+    $(function(){
+   $('.datepicker').datepicker({
+      format: 'mm-dd-yyyy',
+    endDate: FromEndDate, 
+    autoclose: true
+    });
+});
+
+</script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     $("#id_Project_name").change(function () {
@@ -87,5 +104,11 @@ function myFunction() {
     document.getElementById("start").disabled = true;
 }
 </script>
-
+<script>
+			n =  new Date();
+			y = n.getFullYear();
+			m = n.getMonth() + 1;
+			d = n.getDate();
+			document.getElementById("id_Report_date").value = y + "-" + m + "-" + d;
+		</script>
 {%endblock%}

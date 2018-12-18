@@ -1,0 +1,104 @@
+{% extends 'base.html'%}
+{% block content %}
+	<div class="col-lg-12">
+	 <div class="card">
+	   <div class="card-header d-flex align-items-center">
+	     <h3 class="h4">Add Team</h3>
+	   </div>
+	{% if user.is_staff %} 
+	
+	<!-- Container -->
+	<div class="card-body">
+    {% include 'report/messages.html' %}
+    <!-- END Header -->
+	<form action="" method="post" id="Team_form">
+		{%csrf_token%}
+      <div class="form-group row">
+              <label class="required" class="col-sm-2 form-control-label" for="id_Teamname">Team :</label>
+              <div class="col-sm-7"><input type="text" class="form-control" name="Teamname" maxlength="30" required id="id_Teamname"></div>
+      </div>
+       	<div class="submit-row">
+      	<input type="submit" value="Team_save" class="btn btn-primary" name="Save">
+  		</div></form>
+  		</div>
+  		
+		<hr>
+		 <div class="card-body">
+		<form action="" method="post" id="project_form">
+		{%csrf_token%}
+		  
+         <div class="form-group row">
+             <label class="required" class="col-sm-2 form-control-label" for="id_Team_name">Team:</label>
+           <div class="col-sm-7">    
+		    <select name="Team_name" class="form-control" required id="id_Team_name">
+			  <option value="" selected>---------</option>
+			 {%for ft in team%}
+			  <option value="{{ft.pk}}">{{ft.Teamname}}</option>
+			 {%endfor%}
+			</select>
+		</div></div>
+       <div class="form-group row">
+         <label class="required" class="col-sm-2 form-control-label" for="id_Projectname">Project name:</label>
+        <div class="col-sm-7">  
+   			<input type="text" name="Projectname" class="form-control" maxlength="30" required id="id_Projectname">
+         </div></div>
+		<div class="submit-row">
+		<input type="submit" value="Pro_Save" class="btn btn-primary" name="Save">
+		</div>
+	</form></div>
+     <hr>
+    <div class="card-body">
+	<form action="" method="post" id="subproject_form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+		{%csrf_token%}
+		<div class="form-group row">
+		   <label class="required" class="col-sm-2 form-control-label" for="id_team">Team:</label>
+		<div class="col-sm-7">  
+		    <select name="team" class="form-control" required id="id_team">
+			  <option value="" selected>---------</option>
+			 {%for ft in team%}
+			  <option value="{{ft.pk}}">{{ft.Teamname}}</option>
+			 {%endfor%}
+			</select>
+		</div></div>
+                
+        <div class="form-group row">
+            <label class="required" class="col-sm-2 form-control-label" for="id_Project_name">Project name:</label>
+         <div class="col-sm-5">             
+		    <select name="Project_name" class="form-control" required id="id_Project_name">
+		    <option value="" selected>---------</option>
+		</select>
+		</div></div>
+         <div class="form-group row">
+          <label class="required" class="col-sm-2 form-control-label" for="id_Subproject_name">Subproject name:</label>
+          <div class="col-sm-7">
+          <input type="text" name="Subproject_name" class="form-control" maxlength="30" required id="id_Subproject_name">
+                </div></div>
+		<div class="submit-row">
+		<input type="submit" value="sub_Save" class="btn btn-primary" name="Save">
+		</div>
+		</form>
+		</div></div></div>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+	    $("#id_team").change(function () {
+	      var url = $("#DetailForm").attr("data-subpro-url");  
+	      var projectId = $(this).val();  
+	      $.ajax({                       
+	        url: url,                    
+	        data: {
+	          'Team_name': projectId      
+	        },
+	        success: function (data) {  
+	          $("#id_Project_name").html(data); 
+	        }
+	      });
+	    });
+	  </script>
+        
+{% else %}
+	<div class="card-body">
+    <h1>You are not permitted to view list Go back {{user.username}} </h1>
+    </div>
+{% endif %}      
+ 
+{% endblock %}

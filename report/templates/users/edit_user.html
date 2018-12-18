@@ -6,26 +6,27 @@
    <div class="card-header d-flex align-items-center">
      <h3 class="h4">Edit User</h3>
    </div>
+   
   {% if user.is_superuser %} 
   <div class="card-body">
 	  <form method="post" class="form-horizontal" enctype="multipart/form-data">
 	  {% csrf_token %}
-		  {% if form.errors %}
-			    {% for field in form %}
-			        {% for error in field.errors %}
-			            <div class="alert alert-danger">
-			                <strong>{{ error|escape }}</strong>
-			            </div>
-			        {% endfor %}
-			    {% endfor %}
-			    {% for error in form.non_field_errors %}
-			        <div class="alert alert-danger">
-			            <strong>{{ error|escape }}</strong>
-			        </div>
-			    {% endfor %}
-			{% endif %}
-                         <!--{{form.as_p}}-->
-          <div class="form-group row">
+	  {% if form.errors %}
+		    {% for field in form %}
+		        {% for error in field.errors %}
+		            <div class="alert alert-danger">
+		                <strong>{{ error|escape }}</strong>
+		            </div>
+		        {% endfor %}
+		    {% endfor %}
+		    {% for error in form.non_field_errors %}
+		        <div class="alert alert-danger">
+		            <strong>{{ error|escape }}</strong>
+		        </div>
+		    {% endfor %}
+		{% endif %}
+                         
+        <div class="form-group row">
 		<label for="id_EmpName" class="col-sm-2 form-control-label">EmpName</label> 
 		<div class="col-sm-7">
 		<input type="text" class="form-control" name="EmpName" id="id_EmpName" required maxlength="250" value="{{form.EmpName.value}}" >
@@ -41,14 +42,14 @@
 		</div></div>
 		<div class="form-group row">
 		<label for="id_date_join" class="col-sm-2 form-control-label">Date of join</label>
-		<div class="col-sm-5"><input type="date" class="form-control" name="date_join" id="id_date_join"  required>
-		</div> {{form.date_join.value}}</div>
+		<div class="col-sm-5"><input type="date" class="form-control" name="date_join" id="id_date_join" value="{{form.date_join.value|date:"Y-m-d"}}" required > 
+		</div></div>
 		<div class="form-group row">
 		<label for="id_Team" class="col-sm-2 form-control-label">Team </label> 
 		<div class="col-sm-7">
 			<select class="form-control" name="Team" id="id_Team required">
 			{% for teams in Teams%}
-                <option value= "{{teams}}" selected>{{teams}}</option>
+                <option value= "{{teams}}">{{teams}}</option>
              {%endfor%}
 		</select></div></div>
         <div class="form-group row">
@@ -56,7 +57,7 @@
 		<div class="col-sm-7"><select class="form-control" name="Designation" id="id_Designation" required>
                 <option value= "" selected disable hidden>------</option>
                 {% for Title in title%}
-					<option value= "{{Title}}" selected>{{Title}}</option>
+					<option value= "{{Title}}">{{Title}}</option>
 				 {%endfor%}
                 </select>
 		</div></div>
@@ -74,18 +75,20 @@
 		<div class="col-sm-7"><select class="form-control" name="primary_project" id="id_primary_project" required>
                     	<option value= "" selected disable hidden>------</option>
 				        {% for task in task%}
-							<option value= "{{task}}" selected>{{task}}</option>
+							<option value= "{{task}}">{{task}}</option>
 						{%endfor%}  
                  </select>
 		</div></div>
             <div class="form-group row">
 			<label for="id_is_superuser" class="col-sm-2 form-control-label">is Superuser</label> 
 			<div class="col-sm-7">
-			<input type="checkbox"  name="is_superuser" id="id_is_superuser"> 
+			{{form.is_superuser}}
+			
 			</div></div> 
 			<div class="form-group row">
 		  	<label for="id_Empimage" class="col-sm-2 form-control-label">User Image</label> 
-		  	<div class="col-sm-7"><input type="file" class="form-control" name="Empimage" id="id_Empimage">
+		  	<div class="col-sm-7">
+		  	  <input type="file" name="Empimage" id="id_Empimage" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*" />
 			</div></div>
 			<div class="form-group row">
 		  	<label for="id_username" class="col-sm-2 form-control-label">Username</label> 
@@ -93,7 +96,7 @@
 			</div></div>
 			<div class="form-group row">
 			<label for="id_password1" class="col-sm-2 form-control-label">Password:</label>
-			<div class="col-sm-7"><input type="password" class="form-control" name="password1" id="id_password1" required placeholder = "Username along with Empid without space"> 
+			<div class="col-sm-7"><input type="password" class="form-control" name="password1" id="id_password1"  required placeholder = "Username along with Empid without space"> 
 			<span class="help-block">Password must be contain 8 characters</span>
 			</div></div>
 			<div class="form-group row">
@@ -103,6 +106,15 @@
 			<div class="row">
 			 <button type="submit"  class="btn btn-success">Update</button></div>
 	  	</form>
+	  	<link rel=”stylesheet” href=”//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css”>
+		<link rel=”stylesheet” href=”/resources/demos/style.css”>
+		<script src=”https://code.jquery.com/jquery-1.12.4.js”></script>
+		<script src=”https://code.jquery.com/ui/1.12.1/jquery-ui.js”></script>
+		<script>
+		$( function() {
+		$( "#datepicker" ).datepicker();
+		} );
+		</script>
 	</div></div></div>
   {% elif user.is_active %}
 	<h1>You are customer user</h1>

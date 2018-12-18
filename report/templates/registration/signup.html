@@ -6,6 +6,7 @@
    <div class="card-header d-flex align-items-center">
      <h3 class="h4">Create User</h3>
    </div>
+   {% include 'report/messages.html' %}
   {% if user.is_superuser %} 
   <div class="card-body">
 	  <form method="post" class="form-horizontal" enctype="multipart/form-data">
@@ -53,8 +54,9 @@
 		<label for="id_Team" class="col-sm-2 form-control-label">Team </label> 
 		<div class="col-sm-7">
 			<select class="form-control" name="Team" id="id_Team" required>
+				 <option value= "" selected disable hidden>------</option>
 				 {% for team in Teams%}
-				<option value= "{{team}}" selected>{{team}}</option>
+				<option value= "{{team}}">{{team}}</option>
 				{%endfor%}
 		</select></div></div>
 		
@@ -64,7 +66,7 @@
 			     <select class="form-control" name="Designation" id="id_Designation" required>
 	                <option value= "" selected disable hidden>------</option>
 	                 {% for Title in title%}
-						<option value= "{{Title}}" selected>{{Title}}</option>
+						<option value= "{{Title}}" >{{Title}}</option>
 					 {%endfor%}
 	                </select>
 		</div></div>
@@ -84,7 +86,7 @@
 		 <select class="form-control" name="primary_project" id="id_primary_project" required>
                     <option value= "" selected disable hidden>------</option>
 		        	{% for task in task%}
-						<option value= "{{task}}" selected>{{task}}</option>
+						<option value= "{{task}}">{{task}}</option>
 					{%endfor%}      
                  </select>
 		</div></div>
@@ -97,7 +99,8 @@
 		
 		<div class="form-group row">
 	  	<label for="id_Empimage" class="col-sm-2 form-control-label">User Image</label> 
-	  	<div class="col-sm-7"><input type="file" name="Empimage" id="id_Empimage">
+	  	<div class="col-sm-7">
+	  	<input type="file" name="Empimage" id="id_Empimage" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*">
 		</div></div>
 			
 		<div class="form-group row">
@@ -117,6 +120,15 @@
 		<div class="form-group row">
 		 <div class="col-sm-7"><button type="submit"  class="btn btn-success">Create</button></div>
 	  	</form>
+	  	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	  	<script type="text/javascript">
+		  	var uploadField = document.getElementById("id_Empimage");
+			uploadField.onchange = function() {
+			    if(this.files[0].size > 5242880){
+			       alert("File is too big!");
+			       this.value = "";
+		    };
+		};</script>
 	</div></div></div>
   {% elif user.is_active %}
 	<h1>You are customer user</h1>

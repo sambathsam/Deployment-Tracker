@@ -5,9 +5,9 @@ from django.conf.urls import url
 urlpatterns = [
     path('', views.HomePageView, name='home'),
     path('signup/', views.SignUp, name='signup'),
+    path('add/', views.Addsome, name='Addsome'),
     path('create/',views.logpage, name='create_logs'),
     path('reports/',views.reportList, name='report_list'),
-    path('editreports/',views.edit_report, name='edit_report'),
     path(r'report/create/', views.report_create, name='report_create'),
     url(r'^report/(?P<pk>\d+)/update/$', views.report_update, name='report_update'),
     url(r'^report/(?P<pk>\d+)/delete/$', views.report_delete, name='report_delete'),

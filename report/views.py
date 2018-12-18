@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm,ReportForm,ReportFormup,ReviewForm
+from .forms import CustomUserCreationForm,ReportForm,ReportFormup,ReviewForm,ProjectForm,TeamForm,SubproForm
 from django.core import serializers
 from .models import CustomUser,Project,Subproject,Report,Review,datesofmonth
 from django.views import generic
@@ -19,8 +19,29 @@ from django.http import JsonResponse,HttpResponse
 from report.models import Team,Task,Designation
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+def Addsome(request):
+    form = ProjectForm()
+    team = Team.objects.all()
+    a= {'Team_save':TeamForm(request.POST),'Pro_Save':ProjectForm(request.POST),'sub_Save':SubproForm(request.POST)}
+    if request.method == 'GET' and 'Team_name' in str(request):
+        team_id = request.GET.get('Team_name')
+        print(team_id)
+        subpro = Project.objects.filter(Team_name=team_id).order_by('Projectname')
+        return render(request, 'registration/pro_dropdown_list.html', {'data': subpro})
+    if request.method == 'POST':
+        print(request.POST)
+        form = a[str(request.POST['Save'])]
+        if form.is_valid():
+            form.save()
+            messages.warning(request, 'Saved Successfully')
+        print('form saved')
+        return render(request,'registration/TPSadd.html',{'form':form,'team':team})
+    else:   
+        return render(request,'registration/TPSadd.html',{'form':form,'team':team})
+    
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -28,9 +49,8 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('create_logs')
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, "New password and confirm password doesn't match.")
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'registration/change_password.html', {'form': form})
@@ -49,12 +69,17 @@ def SignUp(request):
             team_f = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
             pro = Project.objects.filter(Team_name=team_f)
         if request.method =="POST":
-            form = CustomUserCreationForm(request.POST,request.FILES)
-            if form.is_valid():
-                form.save()
-                return redirect('userlist')
+            print(request.POST)
+            if CustomUser.objects.filter(Empid=request.POST['Empid']):
+                messages.warning(request, 'Employee Id Already Exists.')
+                form = CustomUserCreationForm()
             else:
-                print("invalid")
+                form = CustomUserCreationForm(request.POST,request.FILES)
+                if form.is_valid():
+                    form.save()
+                    return redirect('userlist')
+                else:
+                    print("invalid")
         else:
             form = CustomUserCreationForm()
         return render(request, 'registration/signup.html',{'form':form,'Teams':team_name,'Pro':pro,'task':Task.objects.all(),'title':Designation.objects.all()})
@@ -70,20 +95,23 @@ def HomePageView(request):
 #     context_object_name = 'emp_list'   
 #     queryset = CustomUser.objects.all()
 #     template_name = 'users/usrlist.html'
+# @login_required(login_url='/login')
 def UserList(request):
+    if str(request.user) == 'AnonymousUser':
+        return redirect('login')
     if request.user.is_staff:
         queryset = CustomUser.objects.all()
     else:
         queryset = CustomUser.objects.filter(Team=request.user.Team)
     page = request.GET.get('page', 1)
-    paginator = Paginator(queryset, 10)
+    paginator = Paginator(queryset, 100)
     try:
         queryset = paginator.page(page)
     except PageNotAnInteger:
         queryset = paginator.page(1)
     except EmptyPage:
         queryset = paginator.page(paginator.num_pages)
-    print(request.user.Team)
+    
     return render(request,'users/usrlist.html',{'emp_list':queryset})
 
 def save_report_form(request, form, template_name):
@@ -115,16 +143,9 @@ def valuecheck(request,hours):
         request.POST['End_time']= end_time
         duration = (datetime.datetime.strptime(str(end_time), '%Y-%m-%d %H:%M') - datetime.datetime.strptime(str(start_time), '%Y-%m-%d %H:%M')).total_seconds()
         num_hr = get_duration(duration)
+        print(duration)
         print(num_hr)
-        hours =  Report.objects.filter(Empid=request.user.Empid,Report_date=request.POST['Report_date']).aggregate(Sum('hold_hours'))
-        print(hours)
-        if hours['hold_hours__sum'] == None:
-            t_hr = float(re.sub(r":",".",str(num_hr)))
-        else:
-            t_hr = float(re.sub(r":",".",str(num_hr)))+float(hours['hold_hours__sum'])
-        print(t_hr)
-        hr_format = datetime.timedelta(hours = int(str(t_hr).split('.')[0]), minutes=int(str(t_hr).split('.')[1])).total_seconds()
-        hr_format = float(re.sub(r":",".",str(get_duration(hr_format))))
+        hr_format = re.sub(r":",".",str(num_hr))
         print(hr_format)
     else:
         hr_format = 0
@@ -138,6 +159,8 @@ def valuecheck(request,hours):
         request.POST['Subproject_name'] =None
     elif (str(request.POST['Attendence'])!= "Present") and (str(request.POST['Attendence'])!= "OT") and (str(request.POST['Attendence'])!= "WFH"):
         request.POST = request.POST.copy()
+        if (str(request.POST['Attendence'])== "Leave"):
+            request.POST['No_hours']=0
         request.POST['Task'] =''
         request.POST['Project_name'] = None
         request.POST['Subproject_name'] = None
@@ -146,7 +169,8 @@ def valuecheck(request,hours):
 def pendingdate(request,empid):
     reportsdate = Report.objects.values('Report_date').filter(Empid=empid)
     daterange = datesofmonth.objects.exclude(weekday__in = reportsdate)
-    missdates = daterange.filter(weekday__range=(datetime.date.today().replace(day=1),datetime.date.today()))
+    tbl_first = datesofmonth.objects.values('weekday').order_by('weekday')[0]
+    missdates = daterange.filter(weekday__range=(tbl_first['weekday'],datetime.date.today()))
     newdict  = {}
     some_day_last_week = timezone.now().date() - timedelta(days=7)
     datadict =  Report.objects.filter(Empid=empid,Report_date__range=[some_day_last_week,datetime.date.today()])#,created_at__Report_date=monday_of_last_week, created_at__Report_date=monday_of_this_week)
@@ -248,7 +272,6 @@ def report_create(request):
             form = ReportForm()
         else:
             form = ReportForm(request.POST)
-        print(request.POST)
     else:
         form = ReportForm()
     return save_report_form(request, form, 'report/includes/partial_report_create.html')
@@ -257,17 +280,19 @@ def report_update(request, pk):
     report = get_object_or_404(Report, pk=pk)
     report.status=2
     if request.method == 'POST':
+        print(request.POST)
         hours =  Report.objects.filter(~Q(id = pk),Empid=request.user.Empid,Report_date=datetime.date.today()).aggregate(Sum('No_hours'))
         request,hr_issue = valuecheck(request,hours)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
         if date_d:
             messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
-            form = ReportFormup(instance=report)
+            form = ReportFormup(instance=report,user=request.user)
         else:
             form = ReportFormup(request.POST, instance=report)
     else:
-        form = ReportFormup(instance=report)
-    return save_report_form(request, form, 'report/includes/partial_report_update.html')
+        form = ReportFormup(instance=report,user=request.user)
+#     return save_report_form(request, form, 'report/includes/partial_report_update.html')
+    return save_report_form(request, form, 'report/includes/report_up.html')
 
 def report_delete(request, pk):
     report = get_object_or_404(Report, pk=pk)
@@ -359,10 +384,14 @@ def edit_user(request,eid):
     if request.user.is_authenticated:
         result_set = get_object_or_404(CustomUser, Empid=eid)
         if request.method =="POST":
+            print(request.POST)
             form = CustomUserCreationForm(request.POST,request.FILES, instance=result_set)
             if form.is_valid():
                 form.save()
-                return redirect('userlist')
+                try:
+                    return redirect('userlist')
+                except:
+                    return redirect('create_logs')
             else:
                 print("invalid")
         form = CustomUserCreationForm(instance=result_set)
@@ -378,16 +407,21 @@ def datainsert(request):
     request.POST['start_time']= (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     request.POST['End_time']  = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     request.POST['No_hours']  = 0
-    request.POST['Comments']= None
+    request.POST['Comments']  = None
     request.POST['Attendence'] = "Present"
     return request
 def hour_calc(report):
     cur_tym = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     duration = (datetime.datetime.strptime(str(cur_tym), '%Y-%m-%d %H:%M') - datetime.datetime.strptime(re.sub(r':00\+.*','',str(report.start_time)), '%Y-%m-%d %H:%M')).total_seconds()
+    print(duration)
     num_hr = get_duration(duration)
-    t_hr = float(re.sub(r":",".",str(num_hr)))+float(report.hold_hours)
-    hr_format = datetime.timedelta(hours = int(str(t_hr).split('.')[0]), minutes=int(str(t_hr).split('.')[1])).total_seconds()
-    hr_format = float(re.sub(r":",".",str(get_duration(hr_format))))
+    nh = re.sub(r":",".",str(num_hr))
+    nm = str(report.hold_hours)
+    h1  = int(nh.split('.')[0])+int(nm.split('.')[0])
+    m1  = int(nh.split('.')[1])+int(nm.split('.')[1])
+    pending = re.sub(r":\d+$","",str(datetime.timedelta(hours = int(h1), minutes=int(m1))))
+    hr_format = (re.sub(r":",".",str(pending)))
+    print(hr_format)
     return hr_format
 
 def log_resume(request,pk):
@@ -413,6 +447,7 @@ def logpage(request):
     reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(Empid=request.user.Empid,status=0)).order_by('Report_date')
     form  = ReportForm()
     if request.method == 'POST':
+        print(request.POST)
         if 'Comments' in str(request.POST):
             print(request.POST)
             id_r = re.search(r'Comments_(\d+)', str(request.POST)).group(1)
@@ -445,21 +480,26 @@ def attendence(request):
         import calendar
         if request.method =="POST":
             month = request.POST['Month']
-            if month == '':
-                return HttpResponse('<h2> Please Select the Month</h2>')
+            yyr   = request.POST['Year']
+            
+#             currmonth = datetime.date.today().strftime('%Y-%m')
+#             year  = currmonth.split('-')[0]
+            num_days = calendar.monthrange(int(yyr), int(month))[1]
+            days = [datetime.date(int(yyr),int(month), day) for day in range(1, num_days+1)]
+            if request.user.is_staff:
+                rows = Report.objects.filter(~Q(Empid = 1),Report_date__month=int(month),Report_date__year=int(yyr)).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
+                Name_detail = CustomUser.objects.filter(~Q(Empid = 1)).values_list('Empid','EmpName')
+            else:
+                rows = Report.objects.filter(~Q(Empid = 1),Report_date__month=int(month),Report_date__year=int(yyr),Team=request.user.Team).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
+                Name_detail = CustomUser.objects.filter(~Q(Empid = 1),Team=request.user.Team).values_list('Empid','EmpName')
+            if len(rows)==0:
+                return HttpResponse("<h2>No reports for Selected Month</h2>")
             a= {};i=1
-            Name_detail = CustomUser.objects.filter(~Q(Empid = 1)).values_list('Empid','EmpName')
+            
             for name in Name_detail:
                 name = name[1]
                 a[name.lower()] = i
                 i+=1
-            currmonth = datetime.date.today().strftime('%Y-%m')
-            year  = currmonth.split('-')[0]
-            num_days = calendar.monthrange(int(year), int(month))[1]
-            days = [datetime.date(int(year),int(month), day) for day in range(1, num_days+1)]
-            rows = Report.objects.filter(~Q(Empid = 1),Report_date__month=int(month)).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
-            if len(rows)==0:
-                return HttpResponse("<h2>No reports for Selected Month</h2>")
             response = HttpResponse(content_type='application/ms-excel')
             response['Content-Disposition'] = 'attachment; filename="Attendence.xls"'
             wb = xlwt.Workbook(encoding='utf-8');ws = wb.add_sheet('Attendence',cell_overwrite_ok=True)
@@ -515,42 +555,43 @@ def export_users_xls(request):
         else:
             teamreport = None
         if request.method=="POST":
-            project_re = request.POST['Project_name'];subpro_re  = request.POST['Subproject_name']
-    #         Team = request.POST['Team'];overall = request.POST['overall']
+            print(request.POST)
             if 'Team' in  str(request.POST):
+                print("here tteamm")
                 if str(request.POST['Team']) != '' and 'overall' in str(request.POST):
-                    return HttpResponse("<h2>Please select Team Or Over all</h2>")
+                    return HttpResponse("<h2>Please select Team Or Over all,You selected Both.</h2><br><h2>Reload current Page</h2>")
+                elif str(request.POST['Team']) == '' and 'overall' not in str(request.POST):
+                    return HttpResponse("<h2>Please select Team Or Over all</h2><br><h2>Reload current Page</h2>")
                 elif 'Team' in  str(request.POST) and 'overall' not in str(request.POST):
-                    rows = Report.objects.filter(Team=request.POST['Team']).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+                    rows = Report.objects.filter(Team=request.POST['Team'],Reportstatus = 'Approved',Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
                 elif str(request.POST['Team']) == '' and 'overall' in str(request.POST):
-                    rows = Report.objects.all().values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Team')
-            elif str(project_re)!='' or str(subpro_re)!='' or str(request.POST['start_date'])!='' or request.POST['end_date'] != '':
+                    rows = Report.objects.filter(Reportstatus = 'Approved',Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Team')
+            elif str(request.POST['Project_name'])!='' or str(request.POST['Subproject_name'])!='' or str(request.POST['start_date'])!='' or request.POST['end_date'] != '':
+                project_re = request.POST['Project_name'];subpro_re=request.POST['Subproject_name']
                 if str(project_re)!='' and str(subpro_re)!='' and  str(request.POST['start_date'])!='' and request.POST['end_date'] != '':
-                    rows = Report.objects.filter(Project_name=project_re,Subproject_name=subpro_re,Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+                    rows = Report.objects.filter(Project_name=project_re,Reportstatus = 'Approved',Subproject_name=subpro_re,Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
                 elif str(project_re)!='' and str(subpro_re)=='' and  str(request.POST['start_date'])!='' and request.POST['end_date'] != '':
-                    rows = Report.objects.filter(Project_name=project_re,Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
-                elif str(project_re)=='' and str(subpro_re)=='' and  str(request.POST['start_date'])!='' and str(request.POST['end_date']) != '':
-                    rows = Report.objects.filter(Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+                    rows = Report.objects.filter(Project_name=project_re,Reportstatus = 'Approved',Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
                 elif str(project_re)=='' and str(subpro_re)!='' and  str(request.POST['start_date'])!='' and request.POST['end_date'] != '':
-                    rows = Report.objects.filter(Subproject_name=subpro_re,Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
-                elif str(project_re)!='' and str(subpro_re)!='' and  str(request.POST['start_date']) =='' and request.POST['end_date'] == '':
-                    rows = Report.objects.filter(Project_name=project_re,Subproject_name=subpro_re).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
-                elif str(project_re)!='' and str(subpro_re)=='' and  str(request.POST['start_date']) =='' and request.POST['end_date'] == '':
-                    rows = Report.objects.filter(Project_name=project_re).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
-                elif str(project_re)=='' and str(subpro_re)!='' and  str(request.POST['start_date']) =='' and request.POST['end_date'] == '':
-                    rows = Report.objects.filter(Subproject_name=subpro_re).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+                    rows = Report.objects.filter(Subproject_name=subpro_re,Reportstatus = 'Approved',Report_date__range=[request.POST['start_date'],request.POST['end_date']]).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+                elif str(project_re)=='' and str(subpro_re)=='':
+                    return HttpResponse("<h2>Please select Project</h2><br><h2>Reload current Page</h2>")
+#                     rows = Report.objects.filter(Report_date__range=[request.POST['start_date'],request.POST['end_date']],Reportstatus = 'Approved',Team=request.user.Team).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+#                 elif str(project_re)!='' and str(subpro_re)!='' and  str(request.POST['start_date']) =='' and request.POST['end_date'] == '':
+#                     rows = Report.objects.filter(Project_name=project_re,Reportstatus = 'Approved',Subproject_name=subpro_re).values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+#                 elif str(project_re)!='' and str(subpro_re)=='' and  str(request.POST['start_date']) =='' and request.POST['end_date'] == '':
+#                     rows = Report.objects.filter(Project_name=project_re,Reportstatus = 'Approved').values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
+#                 elif str(project_re)=='' and str(subpro_re)!='' and  str(request.POST['start_date']) =='' and request.POST['end_date'] == '':
+#                     rows = Report.objects.filter(Subproject_name=subpro_re,Reportstatus = 'Approved').values_list('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','Comments').order_by('Empid')
                 else:
                     return HttpResponse("<h2>Please Select Dates Correctly</h2>")
-                if len(rows)==0:
-                    return HttpResponse("<h2>No reports for Selected Dates</h2>")
             else:
                 return HttpResponse("<h2>Please select Project Or Dates</h2><br><h2>Reload current Page</h2>")
             
+            if len(rows)==0:
+                return HttpResponse("<h2>No reports for Selected Dates</h2><h4>Reload current page</h4>")
             response = HttpResponse(content_type='application/ms-excel')
-            if str(request.POST['start_date']) !='':
-                response['Content-Disposition'] = 'attachment; filename="Reports_'+str(str(request.POST['start_date']))+'.xls"'
-            else:
-                response['Content-Disposition'] = 'attachment; filename="Reports.xls"'
+            response['Content-Disposition'] = 'attachment; filename="Reports.xls"'
             wb = xlwt.Workbook(encoding='utf-8')
             ws = wb.add_sheet('Reports')
             # Sheet header, first row

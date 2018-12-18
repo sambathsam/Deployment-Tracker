@@ -1,3 +1,4 @@
+{% if user.is_authenticated %} 
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -26,7 +27,7 @@
     <link rel="shortcut icon" href="{% static 'reports/img/favicon.ico' %}">
     
   </head>
-  <body>
+  <body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
     <div class="page">
       <!-- Main Navbar-->
       <header class="header">
@@ -42,6 +43,9 @@
               </div>
               <!-- Navbar Menu -->
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+              	{% if user.is_staff %} 
+              	<li class="nav-item"><a href="/add" class="nav-link password"> <span class="d-none d-sm-inline">Add TPS</span></a></li>
+                {%endif%}
                 <li class="nav-item"><a href="/password" class="nav-link password"> <span class="d-none d-sm-inline">Change Password</span></a></li>
                 <!-- Logout    -->
                 <li class="nav-item"><a href="/logout" class="nav-link logout"> <span class="d-none d-sm-inline">Logout</span><i class="fa fa-sign-out"></i></a></li>
@@ -97,12 +101,12 @@
                 </ul>
              <ul class="list-unstyled CTAs">
                 	{% if user.is_superuser %} 
-                    <a href="{% url 'export_users_xls' %}" class="btn btn-success btn-md">
+                    <a href="{% url 'export_users_xls' %}" class="btn btn-default btn-md">
 			          <span class="glyphicon glyphicon-print"></span> Export reports
 			        </a>
                     {% endif %}
                     {% if user.is_superuser %} 
-                    <a href="{% url 'attendence_xls' %}" class="btn btn-success btn-md">
+                    <a href="{% url 'attendence_xls' %}" class="btn btn-default btn-md">
 			          <span class="glyphicon glyphicon-print"></span> Attendence
 			        </a>
                     {% endif %}
@@ -129,7 +133,6 @@
                 $("#sidebar").mCustomScrollbar({
                     theme: "minimal"
                 });
-
                 $('#sidebarCollapse').on('click', function () {
                     $('#sidebar, #content').toggleClass('active');
                     $('.collapse.in').toggleClass('in');
@@ -144,5 +147,11 @@
 			d = n.getDate();
 			document.getElementById("today_date").innerHTML = d + "-" + m + "-" + y;
 		</script>
+	<script>
+		window.history.forward();
+	    function noBack() {
+	        window.history.forward();}
+	</script>
   </body>
 </html>
+{%endif%}
