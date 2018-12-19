@@ -55,7 +55,7 @@ class Report(models.Model):
         ('Hotelcode Identification', 'Hotelcode Identification'),
     )
     id    = models.AutoField(primary_key=True,null=False)
-    Empid = models.IntegerField(blank=True)
+    Empid = models.IntegerField(default='',blank=True)
     Name  = models.CharField(max_length=50, blank=True)
     Team  = models.CharField(max_length=50,default='', blank=True)
     Primarytask      = models.CharField(max_length=50,default='', blank=True)
@@ -90,7 +90,7 @@ class Task(models.Model):
         return self.task
 class Review(models.Model):
     Name  = models.CharField(max_length=250,default='', blank=True)
-    EmpID = models.IntegerField(blank=True)
+    EmpID = models.IntegerField(default=0,blank=True)
     Attitude = models.DecimalField(max_digits=9, decimal_places=2,default=0)
     TaskInterpretation = models.DecimalField(max_digits=9, decimal_places=2,default=0) 
     TaskUnderstanding = models.DecimalField(max_digits=9, decimal_places=2,default=0)

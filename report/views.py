@@ -413,14 +413,17 @@ def datainsert(request):
 def hour_calc(report):
     cur_tym = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     duration = (datetime.datetime.strptime(str(cur_tym), '%Y-%m-%d %H:%M') - datetime.datetime.strptime(re.sub(r':00\+.*','',str(report.start_time)), '%Y-%m-%d %H:%M')).total_seconds()
-    print(duration)
     num_hr = get_duration(duration)
     nh = re.sub(r":",".",str(num_hr))
     nm = str(report.hold_hours)
     h1  = int(nh.split('.')[0])+int(nm.split('.')[0])
     m1  = int(nh.split('.')[1])+int(nm.split('.')[1])
-    pending = re.sub(r":\d+$","",str(datetime.timedelta(hours = int(h1), minutes=int(m1))))
-    hr_format = (re.sub(r":",".",str(pending)))
+    pending = datetime.timedelta(hours = int(h1), minutes=int(m1))
+    duration= pending.seconds
+    hours = int(duration / 3600)+int(pending.days)*24
+    minutes = int(duration % 3600 / 60)
+    seconds = int((duration % 3600) % 60)
+    hr_format= '{:02d}.{:02d}'.format(hours, minutes)
     print(hr_format)
     return hr_format
 
