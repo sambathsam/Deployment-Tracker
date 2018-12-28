@@ -1,6 +1,5 @@
 {% load widget_tweaks %}
-	
-	<form method="post" action="{% url 'report_create' %}" class="js-report-create-form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+	<form method="post" onsubmit="return validate()" action="{% url 'report_create' %}" class="js-report-create-form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
 	  {% csrf_token %}
 	  {% if form.errors %}
 		    {% for field in form %}
@@ -52,4 +51,16 @@
       });
     });
   </script>
+<script type="text/javascript">
+    $('.form_datetime').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
+    });
+	</script>
 

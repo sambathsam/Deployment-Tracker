@@ -20,24 +20,27 @@
 	    {% if report.Comments %}
 	    	{% if 'On Hold' in report.Comments %}
 	    		<td>{{ report.Comments }}</td>
-	    		<td value ="{{ report.pk }}" name="Resume" id="Resume"><a href="/logresume/{{ report.pk }}" class="btn btn-warning btn-sm">
+	    		{% ifequal btnstatus '1' %}
+		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume"><a  disabled="disabled" id="Resume"  class="btn btn-warning btn-sm">
+		        {%else%}
+		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume"><a href="/logresume/{{ report.pk }}" id="Resume"  class="btn btn-warning btn-sm">
+		        {%endifequal%}
 	    		Resume</a></td>
 	    	{% else %}
 	    	   <td>{{ report.Comments }}</td>
 	    	   <td>{{ report.Reportstatus }}</td>
 	    	{%endif%}
 	    {% else %}
-	    <form method="post">{%csrf_token%}
-	    	<td><input class="form-control" onfocus="myFunction()" autofocus type="text" name="Comments_{{ report.pk }}" required maxlength="500" pattern=".*\S+.*" id="id_Comments"></td>
+	    <form method="post" id="comment" onSubmit="return captureForm()">{%csrf_token%}
+	    	<td><textarea class="form-control"  autofocus   name="Comments_{{ report.pk }}"  maxlength="500" id="id_Comments" required></textarea></td>
 	    <td>
-	      <button type="submit" class="btn btn-success btn-sm">             
+	      <button type="submit" id="complete"  class="btn btn-success btn-sm">             
 	        <span class="glyphicon glyphicon-pencil"></span> Complete
 	      </button>
 	    </td></form>
 	    <td value ="{{ report.pk }}" name="Hold" id="report-table"><a href="/loghold/{{ report.pk }}" class="btn btn-warning btn-sm">
 	    Hold</a></td>
 	    {%endif%}
-	    
 	  </tr>
 	{% empty %}
 	  <tr>

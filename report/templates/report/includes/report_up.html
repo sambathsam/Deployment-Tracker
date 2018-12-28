@@ -55,27 +55,30 @@
 	</div></div>
 	<div class="form-group row">
 	<label for="id_start_time" class="col-sm-5 form-control-label">Start Time</label> 
-	<div class="col-sm-6"><input type="datetime-local" class="form-control" name="start_time" value="{{form.start_time.value|date:'Y-m-d'}}T{{form.start_time.value|time:'H:i'}}"  id="id_start_time">
+	<div class="col-sm-6">
+	<input class="form-control" type="date" id="id_excepted_DAT_0" name="excepted_DAT_0" value="{{form.start_time.value|date:'Y-m-d'}}"></div></div>
+	<div class="form-group row"><label for="id_start_time" class="col-sm-5 form-control-label"></label> 
+	<div class="col-sm-4">
+	<input class="form-control" type="time" id="id_excepted_DAT_0" name="excepted_DAT_1" value="{{form.start_time.value|time:'H:i'}}">
 	</div></div>
 	<div class="form-group row">
-	<label for="id_start_time" class="col-sm-5 form-control-label">End Time</label> 
-	<div class="col-sm-6"><input type="datetime-local" class="form-control" name="End_time" value="{{form.End_time.value|date:'Y-m-d'}}T{{form.End_time.value|time:'H:i'}}"  id="id_end_time">
+	<label for="id_end_time" class="col-sm-5 form-control-label">End Time</label> 
+	<div class="col-sm-6">
+	<input class="form-control" type="date" id="id_excepted_TAT_0" name="excepted_TAT_0" value="{{form.End_time.value|date:'Y-m-d'}}"></div></div>
+	<div class="form-group row"><label for="id_end_time" class="col-sm-5 form-control-label"></label> 
+	<div class="col-sm-4"><input class="form-control" type="time" id="id_excepted_TAT_1" name="excepted_TAT_1" value="{{form.End_time.value|time:'h:i'}}">
 	</div></div>
 	<input class="form-control" type="hidden" name="No_hours" value="0"  id="id_No_hours" step="0.01">
 	<div class="form-group row"><label for="id_Comments" class="col-sm-5 form-control-label">Comments</label> 
-	<div class="col-sm-6"><input class="form-control" type="text" name="Comments" value="{{form.Comments.value}}" maxlength="500" id="id_Comments"></div></div>
+	<div class="col-sm-6"><textarea class="form-control"  name="Comments"  maxlength="500" id="id_Comments" required>{{form.Comments.value}}</textarea></div>
+	</div>
 	 </table>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Myfunction()">Close</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     <button type="submit" class="btn btn-primary">Update report</button>
   </div>
 </form>
-<script type="text/javascript">
-$( function() {
-$( "#id_Report_date").datepicker();
-} );
-</script>
 <script type="text/javascript">
     $("#id_Project_name").change(function () {
       var url = $("#DetailForm").attr("data-subpro-url");  

@@ -25,9 +25,23 @@ class CustomUserCreationForm(UserCreationForm):
                   'primary_process','is_superuser', 'Designation','Team','Empimage')
         
 class CustomUserChangeForm(UserChangeForm):
+#     def __init__(self, *args, **kwargs):
+#         self.user = kwargs.pop('user', None)
+#         super().__init__(*args, **kwargs)
+#         self.fields['Team'].initial = self.user.Team
+#         if self.user != None:
+#             print(self.user.Team)
+#             print((Team.objects.filter(Teamname=self.user.Team).values('Teamname'))[0]['Teamname'])
+#             if self.user.is_staff:
+#                 self.fieslds['Team']    = forms.ModelChoiceField(queryset=Team.objects.all().order_by('Teamname'),required=True,widget=forms.Select(attrs={'class': 'form-control'}),initial=str(self.user.Team))
+#             else:
+#                 self.fields['Team']    = forms.ModelChoiceField(queryset=(Team.objects.filter(Teamname=self.user.Team).values('Teamname'))[0],required=True,widget=forms.Select(attrs={'class': 'form-control'}))
+        
     class Meta:
         model  = CustomUser
-        fields = UserChangeForm.Meta.fields
+#         fields = UserChangeForm.Meta.fields
+        fields = ('username', 'email','primary_project','Empid','EmpName','date_join',
+                  'primary_process','is_superuser', 'Designation','Team','Empimage','password')#UserChangeForm.Meta.fields
 
 class ReviewForm(forms.ModelForm):
     class Meta:

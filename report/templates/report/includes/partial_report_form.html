@@ -1,21 +1,15 @@
 {% load widget_tweaks %}
-
+	{% load static %}
+	
 	<div class="form-group row">
 		<label for="id_Report_date" class="col-sm-5 form-control-label">Report date</label> 
 		<div class="col-sm-6">
-		<input class="form-control" type="date" name="Report_date"  id="id_Report_date" required>
+		<input  type="date" name="Report_date"  class="form-control" id="id_Report_date" required>
 		</div></div>
 	<div class="form-group row">
-		<label for="id_Attendence_0" class="col-sm-5 form-control-label">Attendence</label> 
-		<div class="col-sm-7"><ul id="id_Attendence">
-	    <li><label for="id_Attendence_0"><input type="radio" name="Attendence" value="Present" id="id_Attendence_0"  checked>Present</label></li>
-	    <li><label for="id_Attendence_1"><input type="radio" name="Attendence" value="Leave" id="id_Attendence_1" >leave</label></li>
-		<li><label for="id_Attendence_2"><input type="radio" name="Attendence" value="Half day leave" id="id_Attendence_2" >Half day leave</label></li>
-		<li><label for="id_Attendence_3"><input type="radio" name="Attendence" value="Permission" id="id_Attendence_3" >Permission</label></li>
-		<li><label for="id_Attendence_4"><input type="radio" name="Attendence" value="WO" id="id_Attendence_4" >Week Off</label></li>
-		<li><label for="id_Attendence_5"><input type="radio" name="Attendence" value="OT" id="id_Attendence_5" >Over Time</label></li>
-		<li><label for="id_Attendence_6"><input type="radio" name="Attendence" value="GH" id="id_Attendence_6" >Govt Holiday</label></li>
-		<li><label for="id_Attendence_7"><input type="radio" name="Attendence" value="WFH" id="id_Attendence_7" >WFH</label></li>
+		<label for="id_Attendence_0" class="col-sm-5 form-control-label">Attendance</label> 
+		<div class="col-sm-6"><ul id="id_Attendence">
+		{{form.Attendence}}
 	</ul></div></div>
 	
 	<div class="form-group row">
@@ -48,17 +42,30 @@
 	</select></div></div>
 	
 	<div class="form-group row">
-	<label for="id_start_time" class="col-sm-5 form-control-label">Start Time</label> 
-	<div class="col-sm-6"><input type="datetime-local" class="form-control" name="start_time"   id="id_start_time">
+	<label for="id_start_date" class="col-sm-5 form-control-label">Start Time</label> 
+	<div class="col-sm-6">
+	<input class="form-control" type="date"  id="id_excepted_DAT_0" name="excepted_DAT_0"> </div></div>
+	<div class="form-group row">
+	<label for="id_start_time" class="col-sm-5 form-control-label"></label> 
+	<div class="col-sm-4">
+	<input class="form-control" type="time" data-time-format="HH:ii"  id="id_excepted_DAT_1" name="excepted_DAT_1">
 	</div></div>
 	<div class="form-group row">
-	<label for="id_start_time" class="col-sm-5 form-control-label">End Time</label> 
-	<div class="col-sm-6"><input type="datetime-local" class="form-control" name="End_time"   id="id_end_time">
+	<label for="id_end_date" class="col-sm-5 form-control-label">End Time</label> 
+	<div class="col-sm-6">
+	<input  type="date" class="form-control" id="id_excepted_TAT_0" name="excepted_TAT_0"> </div></div>
+	<div class="form-group row">
+	<label for="id_end_time" class="col-sm-5 form-control-label"></label> 
+	<div class="col-sm-4">
+	<input  type="time" class="form-control" data-time-format="HH:ii"  id="id_excepted_TAT_1" name="excepted_TAT_1">
+	<!-- <input type="datetime-local" class="form-control" name="End_time" onfocus="combine(form)"  id="id_End_time" value="">
+	<input type="datetime-local" class="form-control" name="start_time"   id="id_start_time"> -->
 	</div></div>
 	<input class="form-control" type="hidden" name="No_hours" value="0"  id="id_No_hours" step="0.01">
 	<div class="form-group row"><label for="id_Comments" class="col-sm-5 form-control-label">Comments:</label> 
-	<div class="col-sm-6"><input class="form-control" type="text" name="Comments" required maxlength="500" id="id_Comments"></div></div>
-	  
+	<div class="col-sm-6"><textarea class="form-control"  name="Comments" maxlength="500" id="id_Comments" required></textarea></div></div>
+	
+
 
   
   

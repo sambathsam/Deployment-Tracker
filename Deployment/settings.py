@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0','159.65.225.115']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -135,6 +134,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'Deployment/media/')
 
 MEDIA_URL = BASE_DIR+'/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)

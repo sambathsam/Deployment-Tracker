@@ -11,74 +11,125 @@
 	<div class="card-body">
     {% include 'report/messages.html' %}
     <!-- END Header -->
-	<form action="" method="post" id="Team_form">
+    <div class="card-body">
+       <form action="" method="post" id="Team_form">
+       {%csrf_token%}
+         <div class="form-group">
+           <label class="form-control-label">Team</label>
+           <input type="text" class="col-sm-5 form-control" name="Teamname" maxlength="30" required id="id_Teamname">
+         </div>
+         
+         <div class="form-group">       
+           <input type="submit" id="team" value="Add Team" class="btn btn-primary " name="Save">
+         </div>
+       </form>
+     </div><hr>
+     <div class="card-body">
+	<form action="" method="post" id="project_form">
 		{%csrf_token%}
-      <div class="form-group row">
-              <label class="required" class="col-sm-2 form-control-label" for="id_Teamname">Team :</label>
-              <div class="col-sm-7"><input type="text" class="form-control" name="Teamname" maxlength="30" required id="id_Teamname"></div>
-      </div>
-       	<div class="submit-row">
-      	<input type="submit" value="Team_save" class="btn btn-primary" name="Save">
-  		</div></form>
-  		</div>
-  		
-		<hr>
-		 <div class="card-body">
-		<form action="" method="post" id="project_form">
-		{%csrf_token%}
-		  
-         <div class="form-group row">
-             <label class="required" class="col-sm-2 form-control-label" for="id_Team_name">Team:</label>
-           <div class="col-sm-7">    
-		    <select name="Team_name" class="form-control" required id="id_Team_name">
+		 <div class="form-group">
+           <label class="form-control-label">Team</label>
+           <select name="Team_name" class="col-sm-5 form-control" required id="id_Team_name">
 			  <option value="" selected>---------</option>
 			 {%for ft in team%}
 			  <option value="{{ft.pk}}">{{ft.Teamname}}</option>
 			 {%endfor%}
 			</select>
-		</div></div>
-       <div class="form-group row">
-         <label class="required" class="col-sm-2 form-control-label" for="id_Projectname">Project name:</label>
-        <div class="col-sm-7">  
-   			<input type="text" name="Projectname" class="form-control" maxlength="30" required id="id_Projectname">
-         </div></div>
-		<div class="submit-row">
-		<input type="submit" value="Pro_Save" class="btn btn-primary" name="Save">
-		</div>
-	</form></div>
+		   </div>
+	       <div class="form-group">
+	         <label  class="form-control-label" for="id_Projectname">Project name</label>
+	   		 <input type="text" name="Projectname" class="col-sm-5 form-control" maxlength="50" required id="id_Projectname1">
+	         </div>
+			<div class="form-group">
+			<input type="submit" id="project" value="Add Project" class="btn btn-primary" name="Save">
+			</div>
+	     </form></div>
      <hr>
     <div class="card-body">
-	<form action="" method="post" id="subproject_form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+	<form action="" method="post"  id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
 		{%csrf_token%}
-		<div class="form-group row">
-		   <label class="required" class="col-sm-2 form-control-label" for="id_team">Team:</label>
-		<div class="col-sm-7">  
-		    <select name="team" class="form-control" required id="id_team">
+		<div class="form-group">
+		   <label class="required" class="col-sm-2 form-control-label" for="id_team">Team</label>
+		    <select name="team" class="col-sm-5 form-control" required id="id_team">
 			  <option value="" selected>---------</option>
 			 {%for ft in team%}
 			  <option value="{{ft.pk}}">{{ft.Teamname}}</option>
 			 {%endfor%}
 			</select>
-		</div></div>
-                
-        <div class="form-group row">
-            <label class="required" class="col-sm-2 form-control-label" for="id_Project_name">Project name:</label>
-         <div class="col-sm-5">             
-		    <select name="Project_name" class="form-control" required id="id_Project_name">
+		</div>
+        <div class="form-group">
+            <label class="required" class="col-sm-2 form-control-label" for="id_Project_name">Project name</label>
+		    <select name="Project_name" class="col-sm-5 form-control" required id="id_Project_name">
 		    <option value="" selected>---------</option>
 		</select>
-		</div></div>
-         <div class="form-group row">
-          <label class="required" class="col-sm-2 form-control-label" for="id_Subproject_name">Subproject name:</label>
-          <div class="col-sm-7">
-          <input type="text" name="Subproject_name" class="form-control" maxlength="30" required id="id_Subproject_name">
-                </div></div>
+		</div>
+         <div class="form-group">
+          <label class="required" class="col-sm-2 form-control-label" for="id_Subproject_name">Subproject name</label>
+          <input type="text" name="Subproject_name" class="col-sm-5 form-control" maxlength="30" required id="id_Subproject_name">
+                </div>
 		<div class="submit-row">
-		<input type="submit" value="sub_Save" class="btn btn-primary" name="Save">
+		<input type="submit" id="subpro" value="Add SubProject" class="btn btn-primary" name="Save">
 		</div>
 		</form>
-		</div></div></div>
+		</div></div></div></div>
+		
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+	$('#subpro').on('click',function()
+			  {
+			 var ddl = document.getElementById("id_team");
+			 var dd2 = document.getElementById("id_Project_name");
+			 var selectedValue = ddl.options[ddl.selectedIndex].value;
+			 var selectedsub = dd2.options[dd2.selectedIndex].value;
+			 var sub = document.getElementById("id_Subproject_name").value;
+			    if (selectedValue == "")
+			   {
+			    alert("Please select a Team");
+			   }
+			    else if (selectedsub == "") {
+			    	alert("Please select a Project");
+			    }
+			    else if (sub == "") {
+			    	alert("Please enter the valid");
+			    }
+			    else {  
+					$(this).val('Please wait ...')
+				      .attr('disabled','disabled');
+				    $('#DetailForm').submit();
+			    }
+			  });
+	$('#team').on('click',function()
+			  {
+				var selectedsub = document.getElementById("id_Teamname").value;
+				   if (selectedsub == "")
+				   {
+				    alert("Please enter the valid");
+				   }
+				    else {  
+						$(this).val('Please wait..')
+					      .attr('disabled','disabled');
+					    $('#Team_form').submit();
+				    }
+			  });
+	$('#project').on('click',function()
+			  {
+				var ddl = document.getElementById("id_Team_name");
+				var selectedsub = document.getElementById("id_Projectname1").value;
+				 var selectedValue = ddl.options[ddl.selectedIndex].value;
+				    if (selectedValue == "")
+				   {
+				    alert("Please select a Team");
+				   }
+				    else if (selectedsub == "") {
+				    	alert("Please select a Project");
+				    }
+				    else {  
+						$(this).val('Please wait..')
+					      .attr('disabled','disabled');
+					    $('#project_form').submit();
+				    }
+			  });
+	</script>
 	<script type="text/javascript">
 	    $("#id_team").change(function () {
 	      var url = $("#DetailForm").attr("data-subpro-url");  

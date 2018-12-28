@@ -6,14 +6,13 @@
 {% block content %}
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-
 <div class="content-inner">
 	<header class="page-header">
             <div class="container-fluid">
               <h2 class="no-margin-bottom">Deployment Dashboard</h2>
             </div>
           </header>
-	<form method="post" class="form-horizontal" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+	<form method="post" class="form-horizontal"  id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
 		  {% csrf_token %}
            <input type="hidden" name="Empid" id="id_Empid" value="{{ user.Empid }}">
 		   <input type="hidden" name="Name" maxlength="50" id="id_Name" value="{{ user.EmpName }}">
@@ -63,13 +62,51 @@
                 <br>
                 <div class="form-group">        
 		      <div class="col-sm-offset-2 col-sm-10">
-		        <button type="submit" id="start" class="btn btn-primary btn-md" onClick="this.form.submit(); this.disabled=true; this.value='Sending…'; ">Start</button>
+		      	{% ifequal btnstatus '1' %}
+		        	<button type="submit" id="start" class="btn btn-primary btn-md" disabled>Start</button>
+		        {%else%}
+		        	<button type="submit" id="start" class="btn btn-primary btn-md">Start</button>
+		        {%endifequal%}
 		      </div></div></form>
 			  {% include 'report/includes/partial_log_list.html' %}
 			  </div>
 			  
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>		  
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>		
+<script type="text/javascript">
+$('#start').on('click',function()
+		  {
+			var ddl = document.getElementById("id_Project_name");
+			var dd2 = document.getElementById("id_Subproject_name");
+			 var selectedValue = ddl.options[ddl.selectedIndex].value;
+			 var selectedsub = dd2.options[dd2.selectedIndex].value;
+			    if (selectedValue == "")
+			   {
+			    alert("Please select a Project");
+			   }
+			    else if (selectedsub == "") {
+			    	alert("Please select a Sub-Project");
+			    }
+			    else {  
+					$(this).val('Please wait ...')
+				      .attr('disabled','disabled');
+					$('#DetailForm').submit();
+				    
+			    }
+		  });
+</script>
+<script type="text/javascript">
+function captureForm() {
+		var ddl = document.getElementById("id_Comments").value.replace(/^\s+|\s+$/gm,'');
+    	if(ddl.length == 0 ){
+    		alert("Please enter the valid comments");
+    		return false;
+        }
+        else {
+        	return true;
+        }
+    }</script>
+
 <script type="text/javascript">
 $("#id_Report_date").change(function () {
 	var FromEndDate = new Date();
@@ -81,9 +118,7 @@ $("#id_Report_date").change(function () {
     autoclose: true
     });
 });
-
 </script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     $("#id_Project_name").change(function () {
       var url = $("#DetailForm").attr("data-subpro-url");  
@@ -98,11 +133,6 @@ $("#id_Report_date").change(function () {
         }
       });
     });
-  </script>
-<script>
-function myFunction() {
-    document.getElementById("start").disabled = true;
-}
 </script>
 <script>
 			n =  new Date();
