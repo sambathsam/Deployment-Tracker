@@ -26,7 +26,9 @@
                 <div class="col-xl-3 col-sm-6">
                   <div class="align-items-center">
                   	<div class="title"><span>Report Date</span></div></div>
-					<div class="item d-flex"><input  type="date" class="datepicker"  name="Report_date"  id="id_Report_date" readonly="true"></div></div>
+					<div class="item d-flex">
+					<input  type="date" class="datepicker"  name="Report_date"  id="id_Report_date" readonly="true">
+					</div></div>
 					
                 <div class="col-xl-3 col-sm-6">
                   <div class="align-items-center">
@@ -73,6 +75,10 @@
 			  
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>		
+
+<script>
+document.getElementById("id_Report_date").valueAsDate = new Date();
+</script>
 <script type="text/javascript">
 $('#start').on('click',function()
 		  {
@@ -91,7 +97,6 @@ $('#start').on('click',function()
 					$(this).val('Please wait ...')
 				      .attr('disabled','disabled');
 					$('#DetailForm').submit();
-				    
 			    }
 		  });
 </script>
@@ -108,18 +113,6 @@ function captureForm() {
     }</script>
 
 <script type="text/javascript">
-$("#id_Report_date").change(function () {
-	var FromEndDate = new Date();
-	alert(FromEndDate);
-    $(function(){
-   $('.datepicker').datepicker({
-      format: 'mm-dd-yyyy',
-    endDate: FromEndDate, 
-    autoclose: true
-    });
-});
-</script>
-<script type="text/javascript">
     $("#id_Project_name").change(function () {
       var url = $("#DetailForm").attr("data-subpro-url");  
       var projectId = $(this).val();  
@@ -134,11 +127,5 @@ $("#id_Report_date").change(function () {
       });
     });
 </script>
-<script>
-			n =  new Date();
-			y = n.getFullYear();
-			m = n.getMonth() + 1;
-			d = n.getDate();
-			document.getElementById("id_Report_date").value = y + "-" + m + "-" + d;
-		</script>
+
 {%endblock%}

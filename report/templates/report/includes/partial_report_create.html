@@ -1,5 +1,5 @@
 {% load widget_tweaks %}
-	<form method="post" onsubmit="return validate()" action="{% url 'report_create' %}" class="js-report-create-form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
+	<form method="post"  action="{% url 'report_create' %}" class="js-report-create-form" id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
 	  {% csrf_token %}
 	  {% if form.errors %}
 		    {% for field in form %}
@@ -31,11 +31,66 @@
 	  </div>
 	  <div class="modal-footer">
 	    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	    <button type="submit" class="btn btn-primary">Create Report</button>
+	    <button type="submit" id="create" class="btn btn-primary">Create Report</button>
 	  </div>
 	</form>
 	
-
+<script type="text/javascript">
+$('#create').on('click',function()
+		  {
+			var req = ["Present", "OT", "WFH", "HWFH","OTH"];
+			var val = document.querySelector('input[name = "Attendence"]:checked').value;
+			var n = req.includes(val);
+			var start = document.getElementById("id_excepted_DAT_1").value;
+			var end   = document.getElementById("id_excepted_TAT_1").value;
+			 if (n)
+				 {
+					 document.getElementById("id_Project_name").required = true;
+					 document.getElementById("id_Subproject_name").required = true;
+					 document.getElementById("id_excepted_DAT_0").required = true;
+					 document.getElementById("id_excepted_DAT_1").required = true;
+					 document.getElementById("id_excepted_TAT_0").required = true;
+					 document.getElementById("id_excepted_TAT_1").required = true;
+					 
+					 var dateFrom = document.getElementById("id_excepted_DAT_0").value;
+					 var dateObj1 = new Date(dateFrom + ' ' + start);
+					 var dateTo = document.getElementById("id_excepted_TAT_0").value;
+					 var dateObj2 = new Date(dateTo + ' ' + end);
+					 stt  = dateObj1.getTime();
+					 endt = dateObj2.getTime();
+					 if(stt > endt) {
+						alert("StartTime greater than EndTime")
+					        return false;
+					 }
+			    }
+			 else {
+				 document.getElementById("id_Project_name").required = false;
+				 document.getElementById("id_Subproject_name").required = false;
+				 document.getElementById("id_excepted_DAT_0").required = false;
+				 document.getElementById("id_excepted_DAT_1").required = false;
+				 document.getElementById("id_excepted_TAT_0").required = false;
+				 document.getElementById("id_excepted_TAT_1").required = false;
+			 }
+			 if (val=="Permission")
+				 {
+					 document.getElementById("id_excepted_DAT_0").required = true;
+					 document.getElementById("id_excepted_DAT_1").required = true;
+					 document.getElementById("id_excepted_TAT_0").required = true;
+					 document.getElementById("id_excepted_TAT_1").required = true;
+					 
+					 var dateFrom = document.getElementById("id_excepted_DAT_0").value;
+					 var dateObj1 = new Date(dateFrom + ' ' + start);
+					 var dateTo = document.getElementById("id_excepted_TAT_0").value;
+					 var dateObj2 = new Date(dateTo + ' ' + end);
+					 stt  = dateObj1.getTime();
+					 endt = dateObj2.getTime();
+					 if(stt > endt) {
+						alert("StartTime greater than EndTime")
+					        return false;
+					 }
+				 }
+		  });
+</script>
 <script type="text/javascript">
     $("#id_Project_name").change(function () {
       var url = $("#DetailForm").attr("data-subpro-url");  
@@ -52,15 +107,8 @@
     });
   </script>
 <script type="text/javascript">
-    $('.form_datetime').datetimepicker({
-        //language:  'fr',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		forceParse: 0,
-        showMeridian: 1
-    });
-	</script>
-
+document.getElementById("id_excepted_DAT_0").onchange = function () {
+    var input = document.getElementById("id_excepted_TAT_0");
+    input.setAttribute("min", this.value);
+}
+</script>

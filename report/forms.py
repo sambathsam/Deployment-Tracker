@@ -47,10 +47,14 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields=('Name', 'EmpID','Attitude','TaskInterpretation','TaskUnderstanding','Approach','Communication','Execution','Commitment','Fulfillment','Performance','Comments') 
-        
+#'WFH':'WFH','OTH':'OTH','HWFH':'HWFH'}
+#
 CHOICES = [('Present', 'Present'), ('Leave', 'leave'),('Half day leave', 'Half day leave'),('Permission', 'Permission'),
-           ('WO', 'Week Off'),('OT','Over Time'),('GH','Govt Holiday'),('WFH','WFH'),]
+           ('WO', 'Week Off'),('OT','Over Time'),('OTH','OTH'),('GH','Govt Holiday'),('WFH','WFH'),('HWFH','HWFH')]
 class ReportForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['Task'].widget.attrs['class'] = 'form-control'
     Attendence  = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect(),initial='Present')
     class Meta:
         model = Report

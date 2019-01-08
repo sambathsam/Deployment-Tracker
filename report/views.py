@@ -139,7 +139,7 @@ def save_report_form(request, form, template_name):
 
 def valuecheck(request):
     hour_issue = False 
-    chk_ls = ['Leave','GH','Permission','Half day leave','WO']
+    chk_ls = ['Leave','GH','Half day leave','WO']
     if str(request.POST['Attendence']) not in str(chk_ls):
         if request.POST['excepted_DAT_0'] != '' and request.POST['excepted_DAT_1'] !='' and request.POST['excepted_TAT_0'] !='' and request.POST['excepted_TAT_1'] !='':
             request.POST = request.POST.copy()
@@ -413,7 +413,6 @@ def edit_user(request,eid):
             team_name = [request.user.Team]
             team_f = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
             pro = Project.objects.filter(Team_name=team_f)
-            
         
         result_set = get_object_or_404(CustomUser, Empid=eid)
         if request.method =="POST":
@@ -569,7 +568,7 @@ def attendence(request):
                 row_num += 1
                 for col_num in range(len(row)):
                     ws.write(row_num, col_num, row[col_num], font_style)
-            atten = {'Present':'P','Leave':'EL','Half day leave':'HEL','WO':'WO','OT':'OT','Permission':'P','GH':'GH','WFH':'WFH'}
+            atten = {'Present':'P','Leave':'EL','Half day leave':'HEL','WO':'WO','OT':'OT','Permission':'P','GH':'GH','WFH':'WFH','OTH':'OTH','HWFH':'HWFH'}
             name_mat = '';date_mat = '';atte_mat = ''
             Mday = [str(da_t) for da_t in days]
             arr_date = []

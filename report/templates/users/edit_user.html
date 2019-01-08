@@ -48,7 +48,7 @@
 		
 		<div class="col-sm-7">
 			<select class="form-control" name="Team" id="id_Team required">
-			<option value= "" selected disable hidden>------</option>
+			<option value= "{{form.Team.value}}" selected>{{form.Team.value}}</option>
 			{% for teams in Teams%}
                 <option value= "{{teams}}">{{teams}}</option>
              {%endfor%}
@@ -58,7 +58,7 @@
         <div class="form-group row">
 		<label for="id_Designation" class="col-sm-2 form-control-label">Designation</label> 
 		<div class="col-sm-7"><select class="form-control" name="Designation" id="id_Designation" required>
-                <option value= "" selected disable hidden>------</option>
+                <option value= "{{form.Designation.value}}" selected >{{form.Designation.value}}</option>
                 {% for Title in title%}
 					<option value= "{{Title}}">{{Title}}</option>
 				 {%endfor%}
@@ -67,7 +67,7 @@
 		<div class="form-group row">
 		<label for="id_primary_process" class="col-sm-2 form-control-label">Primary Project</label> 
 		<div class="col-sm-7"><select class="form-control" name="primary_process" id="id_primary_process" required>
-                <option value= "" selected disable hidden>------</option>
+                <option value= "{{form.primary_process.value}}" selected disable hidden>{{form.primary_process.value}}</option>
                 {% for quiz in Pro%}
 			     <option value="{{quiz.Projectname}}">{{quiz.Projectname}}</option>
 			    {%endfor%}
@@ -76,7 +76,7 @@
         <div class="form-group row">
 		<label for="id_primary_project" class="col-sm-2 form-control-label">Primary Task</label>
 		<div class="col-sm-7"><select class="form-control" name="primary_project" id="id_primary_project" required>
-                    	<option value= "" selected disable hidden>------</option>
+                    	<option value= "{{form.primary_project.value}}" selected disable hidden>{{form.primary_project.value}}</option>
 				        {% for task in task%}
 							<option value= "{{task}}">{{task}}</option>
 						{%endfor%}  
@@ -89,13 +89,17 @@
 			</div></div> 
 			<div class="form-group row">
 		  	<label for="id_Empimage" class="col-sm-2 form-control-label">User Image</label> 
+		  	{% if form.instance.Empimage %}
             <div class="col-sm-7">
-            <label for="Empimage-clear_id" >Clear</label>
-            <input type="checkbox" name="Empimage-clear" id="Empimage-clear_id">&nbsp;<a href="{{form.Empimage.value}}">{{form.Empimage.value}}</a></div></div>
+            <label for="Empimage-clear_id" >Clear</label>	
+            <input type="checkbox" name="Empimage-clear" id="Empimage-clear_id">&nbsp;<a href="{{form.instance.Empimage.url}}" target="_blank" >{{form.Empimage.value}}</a></div>
+            {% endif %}
+            </div>	
             <div class="form-group row"><label for="id_Empimage" class="col-sm-2 form-control-label"></label>
 		  	<div class="col-sm-7">
 		  	  <input type="file" name="Empimage" id="id_Empimage" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*" />
 			</div></div>
+			
 			<div class="form-group row">
 		  	<label for="id_username" class="col-sm-2 form-control-label">Username</label> 
 		  	<div class="col-sm-7"><input type="text" class="form-control" name="username" id="id_username" required  maxlength="150" placeholder = "Username with @anddomainname of user's mailid" value="{{form.username.value}}">
