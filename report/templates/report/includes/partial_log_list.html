@@ -21,10 +21,13 @@
 	    	{% if 'On Hold' in report.Comments %}
 	    		<td>{{ report.Comments }}</td>
 	    		{% ifequal btnstatus '1' %}
-		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume"><a  disabled="disabled" id="Resume"  class="btn btn-warning btn-sm">
+		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume">
+		        	<a  disabled="disabled" id="Resume"  class="btn btn-warning btn-sm">
 		        {%else%}
+		        <form action="/logresume/{{ report.pk }}">
 		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume">
 		        	<a href="/logresume/{{ report.pk }}" id="Resume" onClick="this.form.submit(); this.disabled=true; this.value='Sending…'; " class="btn btn-warning btn-sm">
+		        Resume</a></td></form>
 		        {%endifequal%}
 	    		Resume</a></td>
 	    	{% else %}

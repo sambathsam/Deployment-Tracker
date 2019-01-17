@@ -10,7 +10,8 @@ class CustomUser(AbstractUser):
     objects         = CustomUserManager()
     id              = models.AutoField(primary_key=True)
     primary_project = models.CharField(max_length=250)
-    Empid           = models.IntegerField()
+    legacy_Empid    = models.IntegerField()
+    Empid           = models.CharField(max_length=250)
     EmpName         = models.CharField(max_length=250)
     date_join       = models.DateField(blank=True, null=True)   
     primary_process = models.CharField(max_length=250)
@@ -55,7 +56,7 @@ class Report(models.Model):
         ('Hotelcode Identification', 'Hotelcode Identification'),
     )
     id    = models.AutoField(primary_key=True,null=False)
-    Empid = models.IntegerField(default='',blank=True)
+    Empid = models.CharField(max_length=250)
     Name  = models.CharField(max_length=50, blank=True)
     Team  = models.CharField(max_length=50,default='', blank=True)
     Primarytask      = models.CharField(max_length=50,default='', blank=True)
@@ -90,7 +91,7 @@ class Task(models.Model):
         return self.task
 class Review(models.Model):
     Name  = models.CharField(max_length=250,default='', blank=True)
-    EmpID = models.IntegerField(default=0,blank=True)
+    EmpID = models.CharField(max_length=250)
     Attitude = models.DecimalField(max_digits=9, decimal_places=2,default=0)
     TaskInterpretation = models.DecimalField(max_digits=9, decimal_places=2,default=0) 
     TaskUnderstanding = models.DecimalField(max_digits=9, decimal_places=2,default=0)

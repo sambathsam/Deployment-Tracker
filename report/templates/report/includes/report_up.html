@@ -170,5 +170,16 @@ $('#updates').on('click',function()
 					        return false;
 					}
 				 }
+			 var reportdate = document.getElementById("id_Report_date").value;
+			 var varDate = new Date(reportdate); //dd-mm-YYYY
+			 var today = new Date();
+			 if (val !="Leave")
+				 {
+				 if(varDate >  today)
+					 {
+					 alert("You enter the report for future date..")
+					 return false;
+					 }
+				 }
 		  });
 </script>

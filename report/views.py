@@ -147,12 +147,30 @@ def valuecheck(request):
             request.POST['End_time']= str(request.POST['excepted_TAT_0'])+'T'+str(request.POST['excepted_TAT_1'])
         else:
             hour_issue = True
-            return request,hour_issue
+            return request,hour_issue,'Please select valid date time.'
     else:
         request.POST = request.POST.copy()
         request.POST['start_time']= ''
         request.POST['End_time']= ''
         
+    print(request.POST['Report_date'])
+    Atten = request.POST['Attendence'];Reportdate=request.POST['Report_date']
+    print(Atten)
+    rset = Report.objects.filter(Report_date=Reportdate).values('Report_date','Attendence','Reportstatus')
+    print("rset",rset)
+    if rset:
+        date_db = rset[0]['Report_date']
+        att_db  = rset[0]['Attendence']
+        status_db = rset[0]['Reportstatus']
+        print(date_db,status_db,att_db)
+        if att_db == "Leave":
+            hour_issue = True
+            return request,hour_issue,'Already Applied leave for this date.'
+        if Atten != 'Present':
+            if Atten != 'Half day leave' and Atten != 'Permission':
+                hour_issue = True
+                return request,hour_issue,'Already Reported for this date.You not able to apply '+Atten
+            
     if request.POST['start_time'] != '' and request.POST['End_time'] !='':
         start_time = re.search(r"(.*? \d+:\d+)",re.sub("T",' ',str(request.POST['start_time']))).group(1)
         end_time =  re.search(r"(.*? \d+:\d+)",re.sub("T",' ',str(request.POST['End_time']))).group(1)
@@ -183,11 +201,11 @@ def valuecheck(request):
         request.POST['Task'] =''
         request.POST['Project_name'] = None
         request.POST['Subproject_name'] = None
-    return request,hour_issue
+    return request,hour_issue,''
 
 def pendingdate(request,empid):
     reportsdate = Report.objects.values('Report_date').filter(Empid=empid)
-    daterange = datesofmonth.objects.exclude(weekday__in = reportsdate)
+    daterange = datesofmonth.objects.filter(weekday__gte=request.user.date_join).exclude(weekday__in = reportsdate)
     tbl_first = datesofmonth.objects.values('weekday').order_by('weekday')[0]
     missdates = daterange.filter(weekday__range=(tbl_first['weekday'],datetime.date.today()))
     newdict  = {}
@@ -246,7 +264,9 @@ def reviewlist(request):
     if request.user.is_authenticated:
         empid=request.user.Empid
         review_dict = {}
-        datadict =  Review.objects.filter(EmpID=empid,dtcollected__month__gte=((datetime.datetime.now()+datetime.timedelta(weeks=-24)).strftime("%m")),dtcollected__month__lte=datetime.datetime.now().strftime("%m"))
+        print((datetime.datetime.now()+datetime.timedelta(weeks=-24)).strftime("%Y-%m-%d"))
+        print(datetime.datetime.now().strftime("%m"))
+        datadict =  Review.objects.filter(EmpID=empid,dtcollected__range=[(datetime.datetime.now()+datetime.timedelta(weeks=-24)).strftime("%Y-%m-%d"),datetime.datetime.now().strftime("%Y-%m-%d")])
         datadict = serializers.serialize("json", datadict)
         for fields in json.loads(datadict):
             if (str(fields['fields']['dtcollected'])) in review_dict:
@@ -284,15 +304,16 @@ def reportList(request):
         return redirect("home")
     
 def report_create(request):
+    print(request)
     if request.method == 'POST':
-        request,hr_issue = valuecheck(request)
+        request,hr_issue,error_msg = valuecheck(request)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
         if date_d:
             messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
             form = ReportForm()
         elif hr_issue:
             print('year')
-            messages.warning(request, 'Please select valid date time.')
+            messages.warning(request, error_msg)
             form = ReportForm()
         else:
             form = ReportForm(request.POST)
@@ -304,16 +325,16 @@ def report_update(request, pk):
     report = get_object_or_404(Report, pk=pk)
     report.status=2
     if request.method == 'POST':
-        print(request.POST)
+        print(request)
 #         hours =  Report.objects.filter(~Q(id = pk),Empid=request.user.Empid,Report_date=datetime.date.today()).aggregate(Sum('No_hours'))
-        request,hr_issue = valuecheck(request)
+        request,hr_issue,error_msg = valuecheck(request)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
         if date_d:
             messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
             form = ReportFormup(instance=report,user=request.user)
         elif hr_issue:
             print('year')
-            messages.warning(request, 'Please select valid date time.')
+            messages.warning(request, error_msg)
             form = ReportFormup(instance=report,user=request.user)
         else:
             form = ReportFormup(request.POST, instance=report)
@@ -462,6 +483,7 @@ def hour_calc(report):
     return hr_format
 
 def log_resume(request,pk):
+    print(request)
     print("here log resume")
     report = get_object_or_404(Report, pk=int(pk))
     report.start_time= (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
