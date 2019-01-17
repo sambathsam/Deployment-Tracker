@@ -559,11 +559,11 @@ def attendence(request):
             num_days = calendar.monthrange(int(yyr), int(month))[1]
             days = [datetime.date(int(yyr),int(month), day) for day in range(1, num_days+1)]
             if request.user.is_staff:
-                rows = Report.objects.filter(~Q(Empid = 1),Report_date__month=int(month),Report_date__year=int(yyr)).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
-                Name_detail = CustomUser.objects.filter(~Q(Empid = 1)).values_list('Empid','EmpName')
+                rows = Report.objects.filter(~Q(Empid = '1'),Report_date__month=int(month),Report_date__year=int(yyr)).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
+                Name_detail = CustomUser.objects.filter(~Q(Empid = '1')).values_list('Empid','EmpName')
             else:
-                rows = Report.objects.filter(~Q(Empid = 1),Report_date__month=int(month),Report_date__year=int(yyr),Team=request.user.Team).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
-                Name_detail = CustomUser.objects.filter(~Q(Empid = 1),Team=request.user.Team).values_list('Empid','EmpName')
+                rows = Report.objects.filter(~Q(Empid = '1'),Report_date__month=int(month),Report_date__year=int(yyr),Team=request.user.Team).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
+                Name_detail = CustomUser.objects.filter(~Q(Empid = '1'),Team=request.user.Team).values_list('Empid','EmpName')
             if len(rows)==0:
                 return HttpResponse("<h2>No reports for Selected Month</h2>")
             a= {};i=1
