@@ -156,7 +156,7 @@ def valuecheck(request):
     print(request.POST['Report_date'])
     Atten = request.POST['Attendence'];Reportdate=request.POST['Report_date']
     print(Atten)
-    rset = Report.objects.filter(Report_date=Reportdate).values('Report_date','Attendence','Reportstatus')
+    rset = Report.objects.filter(Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
     print("rset",rset)
     if rset:
         date_db = rset[0]['Report_date']
