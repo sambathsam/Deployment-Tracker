@@ -101,11 +101,15 @@ $('#start').on('click',function()
 		  });
 </script>
 <script type="text/javascript">
-function resumedis() {
-	alert("his");
-	document.getElementById("Resume").disabled = true;
-}
+$("button").click(function() {
+  $("button").prop("disabled", true);
+});
 </script>
+<script type="text/javascript">
+function resumeForm() {
+    document.getElementById("Resume").disabled = true;
+}</script>
+
 <script type="text/javascript">
 function captureForm() {
 		var ddl = document.getElementById("id_Comments").value.replace(/^\s+|\s+$/gm,'');
