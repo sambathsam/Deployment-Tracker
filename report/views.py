@@ -152,15 +152,12 @@ def valuecheck(request):
         request.POST = request.POST.copy()
         request.POST['start_time']= ''
         request.POST['End_time']= ''
-        
-    print(request.POST['Report_date'])
     Atten = request.POST['Attendence'];Reportdate=request.POST['Report_date']
-    print(Atten)
     rset = Report.objects.filter(Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
-    print("rset",rset)
+    print(rset)
     if rset:
-        date_db = rset[0]['Report_date']
-        att_db  = rset[0]['Attendence']
+        date_db   = rset[0]['Report_date']
+        att_db    = rset[0]['Attendence']
         status_db = rset[0]['Reportstatus']
         print(date_db,status_db,att_db)
         if att_db == "Leave":
@@ -218,10 +215,16 @@ def pendingdate(request,empid):
             fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
         if fields['fields']['Subproject_name'] !=None:
             fields['fields']['Spro']=(Subproject.objects.filter(id=fields['fields']['Subproject_name']).values('Subproject_name'))[0]['Subproject_name']
-        if (str(fields['fields']['Report_date'])) in newdict:
-            newdict[str(fields['fields']['Report_date'])].append(fields['fields'])
+        
+        dater = datetime.datetime.strptime(str(fields['fields']['Report_date']), '%Y-%m-%d').strftime("%b.%d, %Y")
+        if (str(dater)) in newdict:
+            fields['fields']['Report_date'] = dater
+            newdict[dater].append(fields['fields'])
         else:
-            newdict[str(fields['fields']['Report_date'])] = [fields['fields']]
+            fields['fields']['Report_date'] = dater
+            newdict[(dater)] = [fields['fields']]
+            
+            
     newdict = sorted(newdict.items())
     return newdict,missdates
 
@@ -264,30 +267,37 @@ def reviewlist(request):
     if request.user.is_authenticated:
         empid=request.user.Empid
         review_dict = {}
-        print((datetime.datetime.now()+datetime.timedelta(weeks=-24)).strftime("%Y-%m-%d"))
-        print(datetime.datetime.now().strftime("%m"))
+        
         datadict =  Review.objects.filter(EmpID=empid,dtcollected__range=[(datetime.datetime.now()+datetime.timedelta(weeks=-24)).strftime("%Y-%m-%d"),datetime.datetime.now().strftime("%Y-%m-%d")])
         datadict = serializers.serialize("json", datadict)
         for fields in json.loads(datadict):
-            if (str(fields['fields']['dtcollected'])) in review_dict:
-                review_dict[str(fields['fields']['dtcollected'])].append(fields['fields'])
+            dater = datetime.datetime.strptime(str(fields['fields']['dtcollected']), '%Y-%m-%d').strftime("%b.%d, %Y")
+            if (str(dater)) in review_dict:
+                fields['fields']['dtcollected'] = dater
+                review_dict[dater].append(fields['fields'])
             else:
-                review_dict[str(fields['fields']['dtcollected'])] = [fields['fields']]
+                fields['fields']['dtcollected'] = dater
+                review_dict[(dater)] = [fields['fields']]
+            
         review_dict = sorted(review_dict.items())
         newdict,missdates = pendingdate(request,empid)
         return render(request, "review/reviewlist.html", {'form': review_dict, 'dates' : missdates})
     else:
         return redirect('login')
+    
 def reviewlist_emp(request,eid):
     if request.user.is_superuser:
         review_dict = {}
         datadict =  Review.objects.filter(EmpID=eid)#,created_at__Report_date=monday_of_last_week, created_at__Report_date=monday_of_this_week)
         datadict = serializers.serialize("json", datadict)
         for fields in json.loads(datadict):
-            if (str(fields['fields']['dtcollected'])) in review_dict:
-                review_dict[str(fields['fields']['dtcollected'])].append(fields['fields'])
+            dater = datetime.datetime.strptime(str(fields['fields']['dtcollected']), '%Y-%m-%d').strftime("%b.%d, %Y")
+            if (str(dater)) in review_dict:
+                fields['fields']['dtcollected'] = dater
+                review_dict[dater].append(fields['fields'])
             else:
-                review_dict[str(fields['fields']['dtcollected'])] = [fields['fields']]
+                fields['fields']['dtcollected'] = dater
+                review_dict[(dater)] = [fields['fields']]
         review_dict = sorted(review_dict.items())
         newdict,missdates = pendingdate(request,eid)
         uname = get_object_or_404(CustomUser, Empid=eid)
@@ -373,13 +383,18 @@ def reportlist(request):
                 for fields in json.loads(datadict):
                     print(fields['fields']['Subproject_name'])
                     fields['fields']['pk']=fields['pk']
-                    fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
+                    if (fields['fields']['Project_name']) != None:
+                        fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
                     if (fields['fields']['Subproject_name']) != None:
                         fields['fields']['Spro']=(Subproject.objects.filter(id=fields['fields']['Subproject_name']).values('Subproject_name'))[0]['Subproject_name']
-                    if (str(fields['fields']['Report_date'])) in newdict:
-                        newdict[str(fields['fields']['Report_date'])].append(fields['fields'])
+                    
+                    dater = datetime.datetime.strptime(str(fields['fields']['Report_date']), '%Y-%m-%d').strftime("%b.%d, %Y")
+                    if (str(dater)) in newdict:
+                        fields['fields']['Report_date'] = dater
+                        newdict[dater].append(fields['fields'])
                     else:
-                        newdict[str(fields['fields']['Report_date'])] = [fields['fields']]
+                        fields['fields']['Report_date'] = dater
+                        newdict[(dater)] = [fields['fields']]
                 newdict = sorted(newdict.items())
                 return render(request, "report/reportlist.html", {'form': newdict, 'dates' : missdates})
             else:
@@ -400,13 +415,18 @@ def reportlist_emp(request,eid):
                 datadict = serializers.serialize("json", datadict)
                 for fields in json.loads(datadict):
                     fields['fields']['pk']=fields['pk']
-                    fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
+                    if (fields['fields']['Project_name']) != None:
+                        fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
                     if (fields['fields']['Subproject_name']) != None:
                         fields['fields']['Spro']=(Subproject.objects.filter(id=fields['fields']['Subproject_name']).values('Subproject_name'))[0]['Subproject_name']
-                    if (str(fields['fields']['Report_date'])) in newdict:
-                        newdict[str(fields['fields']['Report_date'])].append(fields['fields'])
+                    
+                    dater = datetime.datetime.strptime(str(fields['fields']['Report_date']), '%Y-%m-%d').strftime("%b.%d, %Y")
+                    if (str(dater)) in newdict:
+                        fields['fields']['Report_date'] = dater
+                        newdict[dater].append(fields['fields'])
                     else:
-                        newdict[str(fields['fields']['Report_date'])] = [fields['fields']]
+                        fields['fields']['Report_date'] = dater
+                        newdict[(dater)] = [fields['fields']]
                 newdict = sorted(newdict.items())
                 return render(request, "report/reportlist.html", {'form': newdict, 'dates' : missdates,'usrname':uname})
             else:
