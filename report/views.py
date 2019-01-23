@@ -478,7 +478,7 @@ def edit_user(request,eid):
         result_set = get_object_or_404(CustomUser, Empid=eid)
         if request.method =="POST":
             print(request.POST)
-            if CustomUser.objects.filter(Empid=request.POST['Empid']):
+            if CustomUser.objects.filter(~Q(username = request.POST['username']),Empid=request.POST['Empid']):
                 messages.warning(request, 'Employee Id Already Exists.')
                 form = CustomUserChangeForm(instance=result_set)
             else:
