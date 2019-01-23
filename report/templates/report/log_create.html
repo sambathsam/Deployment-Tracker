@@ -5,13 +5,14 @@
 
 {% block content %}
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
+{% include 'report/messages.html' %}
 <div class="content-inner">
 	<header class="page-header">
             <div class="container-fluid">
               <h2 class="no-margin-bottom">Deployment Dashboard</h2>
             </div>
           </header>
+     
 	<form method="post" class="form-horizontal"  id="DetailForm" data-subpro-url="/hr/ajax/load-subpro/">
 		  {% csrf_token %}
            <input type="hidden" name="Empid" id="id_Empid" value="{{ user.Empid }}">
@@ -102,14 +103,13 @@ $('#start').on('click',function()
 </script>
 <script type="text/javascript">
 $("button").click(function() {
-  $("button").prop("disabled", true);
+  if (this.id != "start"){
+	  if (this.id != "complete")
+		  {
+		  $("button").prop("disabled", true);
+		  }}
 });
 </script>
-<script type="text/javascript">
-function resumeForm() {
-    document.getElementById("Resume").disabled = true;
-}</script>
-
 <script type="text/javascript">
 function captureForm() {
 		var ddl = document.getElementById("id_Comments").value.replace(/^\s+|\s+$/gm,'');
@@ -121,7 +121,6 @@ function captureForm() {
         	return true;
         }
     }</script>
-
 <script type="text/javascript">
     $("#id_Project_name").change(function () {
       var url = $("#DetailForm").attr("data-subpro-url");  

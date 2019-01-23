@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^report/(?P<pk>\d+)/update/$', views.report_update, name='report_update'),
     url(r'^report/(?P<pk>\d+)/delete/$', views.report_delete, name='report_delete'),
 #     path('userlist/' ,views.UserList.as_view(),name='userlist'),
+    url(r'^user/(?P<eid>[-\w.]+)$', views.profile, name='profile'),
+
     path('userlist/' ,views.UserList,name='userlist'),
     path('hr/ajax/load-subpro/', views.load_subpro, name='ajax_load_subpro'),
     url(r'^loghold/(?P<pk>\d+)$', views.log_hold, name='log_hold'),

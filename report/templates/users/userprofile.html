@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><style type="text/css">.dismissButton{background-color:#fff;border:1px solid #dadce0;color:#1a73e8;border-radius:4px;font-family:Roboto,sans-serif;font-size:14px;height:36px;cursor:pointer;padding:0 24px}.dismissButton:hover{background-color:rgba(66,133,244,0.04);border:1px solid #d2e3fc}.dismissButton:focus{background-color:rgba(66,133,244,0.12);border:1px solid #d2e3fc;outline:0}.dismissButton:hover:focus{background-color:rgba(66,133,244,0.16);border:1px solid #d2e2fd}.dismissButton:active{background-color:rgba(66,133,244,0.16);border:1px solid #d2e2fd;box-shadow:0 1px 2px 0 rgba(60,64,67,0.3),0 1px 3px 1px rgba(60,64,67,0.15)}.dismissButton:disabled{background-color:#fff;border:1px solid #f1f3f4;color:#3c4043}
+</style><style type="text/css">.gm-style .gm-style-mtc label,.gm-style .gm-style-mtc div{font-weight:400}
+</style><style type="text/css">.gm-control-active>img{box-sizing:content-box;display:none;left:50%;pointer-events:none;position:absolute;top:50%;transform:translate(-50%,-50%)}.gm-control-active>img:nth-child(1){display:block}.gm-control-active:hover>img:nth-child(1),.gm-control-active:active>img:nth-child(1){display:none}.gm-control-active:hover>img:nth-child(2),.gm-control-active:active>img:nth-child(3){display:block}
+</style><link type="text/css" rel="stylesheet" href="{% static 'Profile/css.css'%} "><style type="text/css">.gm-ui-hover-effect{opacity:.6}.gm-ui-hover-effect:hover{opacity:1}
+</style><style type="text/css">.gm-style .gm-style-cc span,.gm-style .gm-style-cc a,.gm-style .gm-style-mtc div{font-size:10px;box-sizing:border-box}
+</style><style type="text/css">@media print {  .gm-style .gmnoprint, .gmnoprint {    display:none  }}@media screen {  .gm-style .gmnoscreen, .gmnoscreen {    display:none  }}</style><style type="text/css">.gm-style-pbc{transition:opacity ease-in-out;background-color:rgba(0,0,0,0.45);text-align:center}.gm-style-pbt{font-size:22px;color:white;font-family:Roboto,Arial,sans-serif;position:relative;margin:0;top:50%;-webkit-transform:translateY(-50%);-ms-transform:translateY(-50%);transform:translateY(-50%)}
+</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Trimatrix Lab">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Profile</title>
+	<link rel="shortcut icon" href="{% static 'reports/img/favicon.ico' %}">
+    <!--APPLE TOUCH ICON-->
+    <link rel="apple-touch-icon" href="http://trimatrixlab.com/store/flatrica/images/site/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="{% static 'Profile/css_003.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/css_002.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/icon.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/animate.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/magnific-popup.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/swiper.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/materialize.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/style_blue.css' %}">
+	<link rel="stylesheet" href="{% static 'Profile/toggle.css' %}">
+
+
+
+<script type="text/javascript" charset="UTF-8" src="{% static 'Profile/common.js' %}"></script><script type="text/javascript" charset="UTF-8" src="{% static 'Profile/util.js' %}"></script><script type="text/javascript" charset="UTF-8" src="{% static 'Profile/marker.js' %}"></script><script type="text/javascript" charset="UTF-8" src="{% static 'Profile/map.js' %}"></script><script type="text/javascript" charset="UTF-8" src="{% static 'Profile/overlay.js'%}"></script><style type="text/css">.gm-style {
+        font: 400 11px Roboto, Arial, sans-serif;
+        text-decoration: none;
+      }
+      .gm-style img { max-width: none; }</style><script type="text/javascript" charset="UTF-8" src="{% static 'Profile/onion.js'%}"></script><script type="text/javascript" charset="UTF-8" src="{% static 'Profile/controls.js' %}"></script></head>
+<body>
+
+
+<!--==========================================
+                  PRE-LOADER
+===========================================-->
+<div id="loading" style="display: none;">
+    <div id="loading-center">
+        <div id="loading-center-absolute">
+            <div class="box-holder animated bounceInDown">
+                <span class="load-box"><span class="box-inner"></span></span>
+            </div>
+            <!-- NAME & STATUS -->
+            <div class="text-holder text-center">
+                <h2>JOHN DOE</h2>
+                <h6>Software Engineer &amp; UI/UX Expert</h6>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+#special-dishes-section{
+    background: url('/static/Profile/profile.png');
+    min-height: 560px;
+    position: relative;
+}
+</style>
+<!--==========================================
+                    HEADER
+===========================================-->
+<header id="home">
+       <!--HEADER BACKGROUND-->
+    <div class="header-background section" style="background-image: url('{% static "Profile/background.jpg"%}')";>
+    </div>
+
+</header>
+
+
+<!--==========================================
+                   V-CARD
+===========================================-->
+<div id="v-card-holder" class="section" data-sr-id="52" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.4s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.4s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.4s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.4s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                <!-- V-CARD -->
+                <div id="v-card" class="card">
+
+                    <!-- PROFILE PICTURE -->
+                    <div id="profile" class="right">
+                    	{%if data.Empimage%}
+			            	<img alt="profile-image" class="img-responsive" src="{{form.instance.Empimage.url}}">
+			            {%else%}
+			            	<img alt="profile-image" class="img-responsive" src="{% static '/reports/img/photos/user.png' %}">
+			            {%endif%}
+                        <div class="slant"></div>
+                        <div></div>
+                    </div>
+
+                    <div class="card-content">
+
+                        <!-- NAME & STATUS -->
+                        <div class="info-headings">
+                            <h4 class="text-uppercase left">{{data.EmpName}}</h4>
+                            <h6 class="text-capitalize left">{{data.Designation}}</h6>
+                        </div>
+                    </div>
+                       </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--==========================================
+                   EDUCATION
+===========================================-->
+<section id="education" class="section">
+    <div class="container">
+        <!-- SECTION TITLE -->
+        <div class="section-title">
+            <h4 class="text-uppercase text-center"><img src="{% static 'Profile/layers.png' %}" alt="demo" data-sr-id="1" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">Profile</h4>
+        </div>
+
+        <div id="timeline-education">
+
+            <!-- FIRST TIMELINE -->
+            <div class="timeline-block">
+                <!-- DOT -->
+                <div class="timeline-dot" data-sr-id="2" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; "><h6>E</h6></div>
+                <!-- TIMELINE CONTENT -->
+                <div class="card timeline-content" data-sr-id="3" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+                    <div class="card-content">
+							<br></br>
+                        <!-- TIMELINE TITLE -->
+                        <h6 class="timeline-title">{{data.Empid}}</h6>
+                        <br></br>                                            
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECOND TIMELINE -->
+            <div class="timeline-block">
+                <!-- DOT -->
+                <div class="timeline-dot" data-sr-id="4" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; "><h6>D</h6></div>
+                <!-- TIMELINE CONTENT -->
+                <div class="card timeline-content" data-sr-id="5" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+                    <div class="card-content">
+						<br></br>
+                        <!-- TIMELINE TITLE -->
+                        <h6 class="timeline-title">{{data.date_join}}</h6>
+                        <br></br>                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- THIRD TIMELINE -->
+            <div class="timeline-block">
+                <!-- DOT -->
+                <div class="timeline-dot" data-sr-id="6" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; "><h6>T</h6></div>
+                <!-- TIMELINE CONTENT -->
+                <div class="card timeline-content" data-sr-id="7" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+                    <div class="card-content">
+						<br></br>     
+                        <!-- TIMELINE TITLE -->
+                        <h6 class="timeline-title">{{data.Team}}</h6>
+                        <br></br>     
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOURTH TIMELINE -->
+            <div class="timeline-block">
+                <!-- DOT -->
+                <div class="timeline-dot" data-sr-id="8" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; "><h6>D</h6></div>
+                <!-- TIMELINE CONTENT -->
+                <div class="card timeline-content" data-sr-id="9" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+                    <div class="card-content">
+						<br></br>     
+                        <!-- TIMELINE TITLE -->
+                        <h6 class="timeline-title">{{data.Designation}}</h6>
+                        <br></br>     
+                    </div>
+                </div>
+            </div>
+            <!-- FIFTH TIMELINE -->
+            <div class="timeline-block">
+                <!-- DOT -->
+                <div class="timeline-dot" data-sr-id="10" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; "><h6>P</h6></div>
+                <!-- TIMELINE CONTENT -->
+                <div class="card timeline-content" data-sr-id="11" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+                    <div class="card-content">
+						<br></br>   
+                        <!-- TIMELINE TITLE -->
+                        <h6 class="timeline-title">{{data.primary_process}}</h6>
+                        <br></br>   
+                    </div>
+                </div>
+            </div>
+            <!-- SIXTH TIMELINE -->
+            <div class="timeline-block">
+                <!-- DOT -->
+                <div class="timeline-dot" data-sr-id="12" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; "><i class="fa glyphicon glyphicon-envelope"></i></div>
+                <!-- TIMELINE CONTENT -->
+                <div class="card timeline-content" data-sr-id="13" style="; visibility: visible;  -webkit-transform: translateY(0) scale(1); opacity: 1;transform: translateY(0) scale(1); opacity: 1;-webkit-transition: -webkit-transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; transition: transform 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s, opacity 1.1s cubic-bezier(0.6, 0.2, 0.1, 1) 0s; ">
+                    <div class="card-content">
+						<br></br>   
+                        <!-- TIMELINE TITLE -->
+                        <h6 class="timeline-title">{{data.email}}</h6>
+                        <br></br>   
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+<!--==========================================
+                     SCROLL TO TOP
+===========================================-->
+<div id="scroll-top">
+    <div id="scrollup" class="animated flipInY" style="display: none;"><i class="fa fa-angle-up"></i></div>
+</div>
+
+<!--==========================================
+                      FOOTER
+===========================================-->
+
+<footer>
+    <div class="container">
+        <!--FOOTER DETAILS-->
+        <p class="text-center">
+           
+        </p>
+    </div>
+</footer>
+
+
+
+
+
+<!--==========================================
+                  SCRIPTS
+===========================================-->
+<script src="{% static 'Profile/jquery-2.js' %}"></script>
+<script src="{% static 'Profile/bootstrap.js' %}"></script>
+<script src="{% static 'Profile/materialize.js' %}"></script>
+<script src="{% static 'Profile/js' %}"></script>
+<script src="{% static 'Profile/markerwithlabel.js' %}"></script>
+<script src="{% static 'Profile/retina.js' %}"></script>
+<script src="{% static 'Profile/scrollreveal.js' %}"></script>
+<script src="{% static 'Profile/swiper.js' %}"></script>
+<script src="{% static 'Profile/jquery.js' %}"></script>
+<script src="{% static 'Profile/custom.js' %}"></script>
+<script src="{% static 'Profile/js.js' %}"></script>
+
+
+
+
+<div class="hiddendiv common"></div></body></html>

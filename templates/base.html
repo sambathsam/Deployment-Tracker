@@ -63,15 +63,15 @@
           	
             <div class="avatar">
             {%if user.Empimage%}
-            	<img src={{user.Empimage.url}} alt="..." class="img-fluid rounded-circle">
+            	<a href="/user/{{user.Empid}}" target="_blank"><img src={{user.Empimage.url}} alt="..." class="img-fluid rounded-circle">{{ emp.EmpName |title }}</a>
             {%else%}
-            	<img src="{% static '/reports/img/photos/user.png' %}" alt="..." class="img-fluid rounded-circle">
+            	<a href="/user/{{user.Empid}}" target="_blank"><img src="{% static '/reports/img/photos/user.png' %}" alt="..." class="img-fluid rounded-circle"></a>
             {%endif%}
             </div>
             <div class="title">
               <h1 class="h4">{{ user.username|title }}</h1>
               <p>{{ user.Designation}}</p>
-              <h4 id="today_date"></h4>
+              
             </div>
           </div>
           <!-- Sidebar Navidation Menus-->
@@ -145,13 +145,7 @@
                 });
             });
         </script>
-    <script>
-			n =  new Date();
-			y = n.getFullYear();
-			m = n.getMonth() + 1;
-			d = n.getDate();
-			document.getElementById("today_date").innerHTML = d + "-" + m + "-" + y;
-		</script>
+    
 	<script>
 		window.history.forward();
 	    function noBack() {

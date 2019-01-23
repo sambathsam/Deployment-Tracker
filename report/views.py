@@ -20,8 +20,27 @@ from report.models import Team,Task,Designation
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
+from django.views.generic.detail import DetailView
 # Create your views here.
 
+# class user_profile(DetailView):
+#     model = CustomUser
+#     template_name = 'users/userprofile.html'
+#     def get_object(self):
+#         print(self.kwargs['username'])
+#         return CustomUser.objects.get(Empid=self.kwargs['username'])
+    
+def profile(request,eid):
+    Emp =request.user.Empid
+    print(Emp)
+    if request.user.is_superuser or Emp==eid:
+        result_set = get_object_or_404(CustomUser, Empid=eid)
+        form = CustomUserChangeForm(request.FILES, instance=result_set)
+        print(result_set)
+        return render(request, 'users/userprofile.html',{'form':form,'data':result_set})
+    else:
+        return redirect('login')
+    
 def Addsome(request):
     form = ProjectForm()
     team = Team.objects.all()
@@ -153,7 +172,7 @@ def valuecheck(request):
         request.POST['start_time']= ''
         request.POST['End_time']= ''
     Atten = request.POST['Attendence'];Reportdate=request.POST['Report_date']
-    rset = Report.objects.filter(Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
+    rset = Report.objects.filter(~Q(Reportstatus = 'Rejected'),Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
     print(rset)
     if rset:
         date_db   = rset[0]['Report_date']
@@ -213,6 +232,8 @@ def pendingdate(request,empid):
         fields['fields']['pk']=fields['pk']
         if fields['fields']['Project_name'] != None:
             fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
+        else:
+            fields['fields']['Pro']=fields['fields']['Attendence']
         if fields['fields']['Subproject_name'] !=None:
             fields['fields']['Spro']=(Subproject.objects.filter(id=fields['fields']['Subproject_name']).values('Subproject_name'))[0]['Subproject_name']
         
@@ -458,15 +479,19 @@ def edit_user(request,eid):
         result_set = get_object_or_404(CustomUser, Empid=eid)
         if request.method =="POST":
             print(request.POST)
-            form = CustomUserChangeForm(request.POST,request.FILES, instance=result_set)
-            if form.is_valid():
-                form.save()
-                try:
-                    return redirect('userlist')
-                except:
-                    return redirect('create_logs')
+            if CustomUser.objects.filter(Empid=request.POST['Empid']):
+                messages.warning(request, 'Employee Id Already Exists.')
+                form = CustomUserChangeForm(instance=result_set)
             else:
-                print("invalid")
+                form = CustomUserChangeForm(request.POST,request.FILES, instance=result_set)
+                if form.is_valid():
+                    form.save()
+                    try:
+                        return redirect('userlist')
+                    except:
+                        return redirect('create_logs')
+                else:
+                    print("invalid")
         else:
             form = CustomUserChangeForm(instance=result_set)
         return render(request, 'users/edit_user.html',{'form':form,'Teams':(team_name),'Pro':pro,'task':Task.objects.all(),'title':Designation.objects.all()})
@@ -478,13 +503,29 @@ def get_duration(duration):
     seconds = int((duration % 3600) % 60)
     return '{:02d}:{:02d}'.format(hours, minutes)
 def datainsert(request):
+    hour_issue = False
+    Atten = "Present";Reportdate=request.POST['Report_date']
+    rset = Report.objects.filter(~Q(Reportstatus = 'Rejected'),Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
+    print(rset)
+    if rset:
+        date_db   = rset[0]['Report_date']
+        att_db    = rset[0]['Attendence']
+        status_db = rset[0]['Reportstatus']
+        print(date_db,status_db,att_db)
+        if att_db == "Leave":
+            hour_issue = True
+            return request,hour_issue,'Already Applied leave for this date.'
+        if Atten != 'Present':
+            if Atten != 'Half day leave' and Atten != 'Permission':
+                hour_issue = True
+                return request,hour_issue,'Already Reported for this date.You not able to apply '+Atten
     request.POST = request.POST.copy()
     request.POST['start_time']= (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     request.POST['End_time']  = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     request.POST['No_hours']  = 0
     request.POST['Comments']  = None
     request.POST['Attendence'] = "Present"
-    return request
+    return request,hour_issue,''
 def hour_calc(report):
     cur_tym = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     duration = (datetime.datetime.strptime(str(cur_tym), '%Y-%m-%d %H:%M') - datetime.datetime.strptime(re.sub(r':00\+.*','',str(report.start_time)), '%Y-%m-%d %H:%M')).total_seconds()
@@ -545,7 +586,10 @@ def logpage(request):
                 btnstatus = '1' if len(disbtn) else '0'
                 return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates,'btnstatus':btnstatus})
             else:
-                request = datainsert(request)
+                request,hr_issue,error_msg = datainsert(request)
+                if hr_issue:
+                    messages.warning(request, error_msg)
+                    return redirect('create_logs')
                 form = ReportForm(request.POST)
                 if form.is_valid():
                     form.save()

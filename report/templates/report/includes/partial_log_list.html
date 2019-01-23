@@ -11,6 +11,7 @@
       </tr>
     </thead>
     <tbody>
+    
 	{% for report in reports %}
 	  <tr>
 	    <td>{{ report.Report_date }}</td>
@@ -24,13 +25,12 @@
 		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume">
 		        	<a  disabled="disabled" id="Resume"  class="btn btn-warning btn-sm">Resume</a></td>
 		        {%else%}
-		        <td value ="{{ report.pk }}" name="Resume" id="id_Resume">
+		        	<td value ="{{ report.pk }}" name="Resume" id="id_Resume">
 		        	<a href="/logresume/{{ report.pk }}" id="Resume">
-		        	<button class="btn btn-warning btn-sm" onclick="return resumeForm();">Resume</button></a>
+		        	<button  class="btn btn-warning btn-sm">Resume</button></a>
 		        </td>
 		        {%endifequal%}
-	    		
-	    	{% else %}
+	    	{%else%}
 	    	   <td>{{ report.Comments }}</td>
 	    	   <td>{{ report.Reportstatus }}</td>
 	    	{%endif%}
@@ -42,8 +42,8 @@
 	        <span class="glyphicon glyphicon-pencil"></span> Complete
 	      </button>
 	    </td></form>
-	    <td value ="{{ report.pk }}" name="Hold" id="report-table"><a href="/loghold/{{ report.pk }}" class="btn btn-warning btn-sm">
-	    Hold</a></td>
+	    <td value ="{{ report.pk }}" name="Hold" id="report-table">
+	    <a href="/loghold/{{ report.pk }}"><button class="btn btn-warning btn-sm">Hold</button></a></td>
 	    {%endif%}
 	  </tr>
 	{% empty %}

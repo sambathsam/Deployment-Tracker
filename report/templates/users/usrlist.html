@@ -25,14 +25,13 @@
 		  <th>Primary Project</th>
 		  <th>Team</th>
 		  <th>Date Of Join</th>
-		  
 		</tr>
       </thead>
      <tbody id="myTable">
 	    {% for emp in emp_list %}
                {%if not emp.username == 'Admin'%}
 	        <tr>
-	        <td>{{ emp.EmpName |title }}</td>
+	        <td value ="{{ emp.EmpName }}" name="{{ emp.EmpName }}" id="id_profile"><a href="/user/{{emp.Empid}}" target="_blank">{{ emp.EmpName |title }}</a></td>
 	        <td>{{ emp.Empid }}</td>
 	        <td>{{ emp.primary_project }}</td>
 	        <td>{{ emp.Team }}</td>
