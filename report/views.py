@@ -36,7 +36,6 @@ def profile(request,eid):
     if request.user.is_superuser or Emp==eid:
         result_set = get_object_or_404(CustomUser, Empid=eid)
         form = CustomUserChangeForm(request.FILES, instance=result_set)
-        print(result_set)
         return render(request, 'users/userprofile.html',{'form':form,'data':result_set})
     else:
         return redirect('login')
