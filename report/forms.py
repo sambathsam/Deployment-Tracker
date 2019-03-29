@@ -46,7 +46,7 @@ class ReportForm(forms.ModelForm):
     Attendence  = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect(),initial='Present')
     class Meta:
         model = Report
-        fields = ('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','start_time','End_time','Comments','status')
+        fields = ('Empid','Name','Primarytask','Team','Report_date','Attendence','Project_name', 'Subproject_name','Task','No_hours','start_time','End_time','Comments','status','Reportstatus')
         
 class ReportFormup(forms.ModelForm):
     def __init__(self, *args, **kwargs):

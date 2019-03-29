@@ -143,7 +143,9 @@ def save_report_form(request, form, template_name):
     data  = dict()
     if request.method == 'POST':
         if form.is_valid():
+            print("Save:",request.POST)
             form.save()
+            print(form)
             data['form_is_valid']    = True
             reports = Report.objects.filter(Empid=request.user.Empid,dtcollected=datetime.date.today(),status=2).order_by('Report_date')
             data['html_report_list'] = render_to_string('report/includes/partial_report_list.html', {
@@ -170,6 +172,11 @@ def valuecheck(request):
         request.POST = request.POST.copy()
         request.POST['start_time']= ''
         request.POST['End_time']= ''
+    if request.user.is_superuser:
+        print("herere updated")
+        request.POST = request.POST.copy()
+        request.POST['Reportstatus']= 'Approved'
+    print(request.POST)
     Atten = request.POST['Attendence'];Reportdate=request.POST['Report_date']
     rset = Report.objects.filter(~Q(Reportstatus = 'Rejected'),Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
     print(rset)
@@ -337,6 +344,7 @@ def report_create(request):
     print(request)
     if request.method == 'POST':
         request,hr_issue,error_msg = valuecheck(request)
+        print("Hi tis is :",request.POST)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
         if date_d:
             messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
@@ -577,6 +585,10 @@ def logpage(request):
                 request.POST = request.POST.copy()
                 report.Comments = request.POST['Comments_'+id_r]
                 request.POST['End_time']  = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
+                if request.user.is_superuser:
+                    report.Reportstatus= 'Approved'
+                    print("herere upated")
+                print(request.POST)
                 report.End_time = request.POST['End_time'];report.status = 1
                 report.No_hours = hour_calc(report)
                 report.save()
