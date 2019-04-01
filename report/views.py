@@ -50,7 +50,7 @@ def Addsome(request):
         subpro = Project.objects.filter(Team_name=team_id).order_by('Projectname')
         return render(request, 'registration/pro_dropdown_list.html', {'data': subpro})
     if request.method == 'POST':
-        #print(request.POST),len(request.POST)
+        print(request.POST),len(request.POST)
         if 'Team_name' in str(request.POST):
             form = ProjectForm(request.POST)
         elif 'Teamname' in  str(request.POST):
@@ -60,7 +60,7 @@ def Addsome(request):
         if form.is_valid():
             form.save()
             messages.warning(request, 'Saved Successfully')
-        print('form saved')
+        
         return render(request,'registration/TPSadd.html',{'form':form,'team':team})
     else:   
         return render(request,'registration/TPSadd.html',{'form':form,'team':team})
@@ -143,13 +143,12 @@ def save_report_form(request, form, template_name):
     data  = dict()
     if request.method == 'POST':
         if form.is_valid():
-            #print("Save:",request.POST)
             form.save()
-            #print(form)
+            usr_ide = 'Yes' if request.user.is_superuser else 'No'
             data['form_is_valid']    = True
             reports = Report.objects.filter(Empid=request.user.Empid,dtcollected=datetime.date.today(),status=2).order_by('Report_date')
             data['html_report_list'] = render_to_string('report/includes/partial_report_list.html', {
-                'reports': reports
+                'reports': reports,'user_iden':usr_ide
             })
         else:
             data['form_is_valid'] = False
@@ -173,18 +172,15 @@ def valuecheck(request):
         request.POST['start_time']= ''
         request.POST['End_time']= ''
     if request.user.is_superuser:
-        #print("herere updated")
         request.POST = request.POST.copy()
         request.POST['Reportstatus']= 'Approved'
-    #print(request.POST)
+    
     Atten = request.POST['Attendence'];Reportdate=request.POST['Report_date']
     rset = Report.objects.filter(~Q(Reportstatus = 'Rejected'),Report_date=Reportdate,Empid=request.user.Empid).values('Report_date','Attendence','Reportstatus')
-    print(rset)
     if rset:
         date_db   = rset[0]['Report_date']
         att_db    = rset[0]['Attendence']
         status_db = rset[0]['Reportstatus']
-        #print(date_db,status_db,att_db)
         if att_db == "Leave":
             hour_issue = True
             return request,hour_issue,'Already Applied leave for this date.'
@@ -196,7 +192,7 @@ def valuecheck(request):
     if request.POST['start_time'] != '' and request.POST['End_time'] !='':
         start_time = re.search(r"(.*? \d+:\d+)",re.sub("T",' ',str(request.POST['start_time']))).group(1)
         end_time =  re.search(r"(.*? \d+:\d+)",re.sub("T",' ',str(request.POST['End_time']))).group(1)
-        #print(start_time,end_time)
+        
         request.POST = request.POST.copy()
         request.POST['start_time']= start_time
         request.POST['End_time']= end_time
@@ -259,10 +255,8 @@ def edit_report(request):
     if request.user.is_authenticated:
         if request.method=='POST':
             if (request.POST['show_date']) !='':
-                print(request.POST['show_date'])
                 date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['show_date']),'%Y-%m-%d')
                 if date_d:
-                    print('here')
                     return HttpResponse("<h2>Exceeded More than 7 days to Edit report for given date.</h2><br><h3>Reload current page to back</h3>")
                 reports = Report.objects.filter(Empid=request.user.Empid,Report_date=request.POST['show_date'],status=2)
                 return render(request,'report/edit_report.html', {'reports': reports})
@@ -334,23 +328,21 @@ def reviewlist_emp(request,eid):
 def reportList(request):
     if request.user.is_authenticated:
         empid=request.user.Empid
+        usr_id = 'Yes' if request.user.is_superuser else 'No'
         reports = Report.objects.filter(Empid=request.user.Empid,dtcollected=datetime.date.today(),status=2).order_by('Report_date')
         newdict,missdates = pendingdate(request,empid)
-        return render(request,'report/report_list.html', {'reports': reports,'dates':missdates})    
+        return render(request,'report/report_list.html', {'reports': reports,'dates':missdates,'user_iden':usr_id})    
     else:
         return redirect("home")
     
 def report_create(request):
-    #print(request)
     if request.method == 'POST':
         request,hr_issue,error_msg = valuecheck(request)
-        #print("Hi tis is :",request.POST)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
         if date_d:
             messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
             form = ReportForm()
         elif hr_issue:
-            print('year')
             messages.warning(request, error_msg)
             form = ReportForm()
         else:
@@ -363,7 +355,6 @@ def report_update(request, pk):
     report = get_object_or_404(Report, pk=pk)
     report.status=2
     if request.method == 'POST':
-        #print(request)
 #         hours =  Report.objects.filter(~Q(id = pk),Empid=request.user.Empid,Report_date=datetime.date.today()).aggregate(Sum('No_hours'))
         request,hr_issue,error_msg = valuecheck(request)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
@@ -371,7 +362,6 @@ def report_update(request, pk):
             messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
             form = ReportFormup(instance=report,user=request.user)
         elif hr_issue:
-            print('year')
             messages.warning(request, error_msg)
             form = ReportFormup(instance=report,user=request.user)
         else:
@@ -409,7 +399,6 @@ def reportlist(request):
                 datadict = Report.objects.filter(Empid=request.user.Empid,Report_date=request.POST['show_date'])
                 datadict = serializers.serialize("json", datadict)
                 for fields in json.loads(datadict):
-                    print(fields['fields']['Subproject_name'])
                     fields['fields']['pk']=fields['pk']
                     if (fields['fields']['Project_name']) != None:
                         fields['fields']['Pro']=(Project.objects.filter(id=fields['fields']['Project_name']).values('Projectname'))[0]['Projectname']
@@ -567,7 +556,7 @@ def log_hold(request,pk):
     report.save()
     return redirect('/create')
 def logpage(request):
-    #print(request)
+    print(request)
     if request.user.is_authenticated:
         team = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
         data1 = Project.objects.filter(Team_name=team)
@@ -578,7 +567,7 @@ def logpage(request):
         print(btnstatus)
         form  = ReportForm()
         if request.method == 'POST':
-            #print(request.POST)
+            print(request.POST)
             if 'Comments' in str(request.POST):
                 id_r = re.search(r'Comments_(\d+)', str(request.POST)).group(1)
                 report = get_object_or_404(Report, pk=int(id_r))
@@ -587,8 +576,8 @@ def logpage(request):
                 request.POST['End_time']  = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
                 if request.user.is_superuser:
                     report.Reportstatus= 'Approved'
-                    #print("herere upated")
-                #print(request.POST)
+                    print("herere upated")
+                print(request.POST)
                 report.End_time = request.POST['End_time'];report.status = 1
                 report.No_hours = hour_calc(report)
                 report.save()

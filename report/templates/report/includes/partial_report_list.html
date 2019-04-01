@@ -1,3 +1,4 @@
+
 {% for report in reports %}
   <tr>
     <td>{{ report.Report_date }}</td>
@@ -7,7 +8,7 @@
     <td>{{ report.No_hours }}</td>
     <td>{{ report.Comments }}</td>
     <td>
-    {% if 'Waiting'  in report.Reportstatus %}
+    {% if 'Waiting'  in report.Reportstatus or 'Yes' in user_iden %}
       <button type="button"
               class="btn btn-warning btn-sm js-update-report"
               data-url="{% url 'report_update' report.id %}">
