@@ -49,18 +49,13 @@
 				<div class="col-xl-3 col-sm-6">
                   <div class="align-items-center">
                   	<div class="title"><span>Task</span></div></div>
-                  	<div class="item d-flex"><select  name="Task" class="form-control col-sm-11" id="id_Task">
-					  <option value="" selected>-------------</option>
-					  <option value="Scripting">Scripting</option>
-					  <option value="Re-scripting">Rescripting</option>
-					  <option value="Analysis">Analysis</option>
-					  <option value="Manual">Manual</option>
-					  <option value="Tool Monitoring">Tool Monitoring</option>
-					  <option value="Meeting">Meeting</option>
-					  <option value="URL Identification">URL Identification</option>
-					  <option value="Duplicate Identification">Duplicate Identification</option>
-					  <option value="Hotelcode Identification">Hotelcode Identification</option>
-					</select></div></div>
+                  	<div class="item d-flex">
+                  	<select name ="Task" class="form-control col-sm-11" id="id_Task">
+						<option value="">---------</option>
+					      {% for quiz in taskdata%}
+						  <option value="{{quiz.task}}">{{quiz.task}}</option>
+						  {%endfor%}
+					</select>
                 </div></div></section>
                 <br>
                 <div class="form-group">        

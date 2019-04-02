@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,render_to_response
 from .forms import CustomUserCreationForm,CustomUserChangeForm,ReportForm,ReportFormup,ReviewForm,ProjectForm,TeamForm,SubproForm
 from django.core import serializers
-from .models import CustomUser,Project,Subproject,Report,Review,datesofmonth
+from .models import CustomUser,Project,Subproject,Report,Review,datesofmonth,projectTask
 from django.views import generic
 from django.urls import reverse_lazy
 from django.http.response import HttpResponseRedirect
@@ -140,6 +140,7 @@ def UserList(request):
 def save_report_form(request, form, template_name):
     team = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
     data1 = Project.objects.filter(Team_name=team)
+    task_data = projectTask.objects.all()
     data  = dict()
     if request.method == 'POST':
         if form.is_valid():
@@ -152,7 +153,7 @@ def save_report_form(request, form, template_name):
             })
         else:
             data['form_is_valid'] = False
-    context = {'form': form,'data':data1}
+    context = {'form': form,'data':data1,'taskdata':task_data}
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
@@ -540,8 +541,6 @@ def hour_calc(report):
     return hr_format
 
 def log_resume(request,pk):
-    print(request)
-    print("here log resume")
     report = get_object_or_404(Report, pk=int(pk))
     report.start_time= (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
     report.End_time  = (datetime.datetime.now()+datetime.timedelta(hours = int('05'), minutes=30)).strftime('%Y-%m-%d %H:%M')
@@ -555,16 +554,18 @@ def log_hold(request,pk):
     report.hold_hours = hour_calc(report)
     report.save()
     return redirect('/create')
+
 def logpage(request):
-    print(request)
+    #print(request)
     if request.user.is_authenticated:
         team = (Team.objects.filter(Teamname=request.user.Team).values('id'))[0]['id']
         data1 = Project.objects.filter(Team_name=team)
+        task_data = projectTask.objects.all()
         newdict,missdates = pendingdate(request,request.user.Empid)
         reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(Empid=request.user.Empid,status=0)).order_by('Report_date')
         disbtn =  Report.objects.filter(Q(Empid=request.user.Empid,status=0,Comments__isnull=True)).order_by('Report_date')
         btnstatus = '1' if len(disbtn) else '0'
-        print(btnstatus)
+        #print(btnstatus)
         form  = ReportForm()
         if request.method == 'POST':
             print(request.POST)
@@ -584,7 +585,7 @@ def logpage(request):
                 reports = Report.objects.filter(Q(Empid=request.user.Empid,dtcollected=datetime.date.today())| Q(Empid=request.user.Empid,status=0)).order_by('Report_date')
                 disbtn =  Report.objects.filter(Q(Empid=request.user.Empid,status=0,Comments__isnull=True)).order_by('Report_date')
                 btnstatus = '1' if len(disbtn) else '0'
-                return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates,'btnstatus':btnstatus})
+                return render(request,'report/log_create.html',{'pro':data1,'taskdata':task_data,'form':form,'reports':reports,'dates' : missdates,'btnstatus':btnstatus})
             else:
                 request,hr_issue,error_msg = datainsert(request)
                 if hr_issue:
@@ -599,7 +600,7 @@ def logpage(request):
 #                 return render_to_response('report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates,'btnstatus':btnstatus})
                 return redirect('create_logs')
         else:
-            return render(request,'report/log_create.html',{'pro':data1,'form':form,'reports':reports,'dates' : missdates,'btnstatus':btnstatus})
+            return render(request,'report/log_create.html',{'pro':data1,'taskdata':task_data,'form':form,'reports':reports,'dates' : missdates,'btnstatus':btnstatus})
     else:
         return redirect('login')
 def load_subpro(request):

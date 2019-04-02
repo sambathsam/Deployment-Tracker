@@ -2,7 +2,6 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from .models import CustomUser,Report,Review,Team,Project,Subproject,Designation
 
-
 class TeamForm(forms.ModelForm):
     class Meta:
         model = Team
@@ -36,7 +35,7 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields=('Name', 'EmpID','Attitude','TaskInterpretation','TaskUnderstanding','Approach','Communication','Execution','Commitment','Fulfillment','Performance','Comments') 
 #'WFH':'WFH','OTH':'OTH','HWFH':'HWFH'}
-#
+
 CHOICES = [('Present', 'Present'), ('Leave', 'leave'),('Half day leave', 'Half day leave'),('Permission', 'Permission'),
            ('WO', 'Week Off'),('OT','Over Time'),('OTH','OTH'),('GH','Govt Holiday'),('WFH','WFH'),('HWFH','HWFH')]
 class ReportForm(forms.ModelForm):

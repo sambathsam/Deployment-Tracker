@@ -44,17 +44,6 @@ class Subproject(models.Model):
         return self.Subproject_name
     
 class Report(models.Model):
-    TASK_TYPES = (
-        ('Scripting', 'Scripting'),
-        ('Re-scripting', 'Rescripting'),
-        ('Analysis', 'Analysis'),
-        ('Manual', 'Manual'),
-        ('Tool Monitoring', 'Tool Monitoring'),
-        ('Meeting', 'Meeting'),
-        ('URL Identification', 'URL Identification'),
-        ('Duplicate Identification', 'Duplicate Identification'),
-        ('Hotelcode Identification', 'Hotelcode Identification'),
-    )
     id    = models.AutoField(primary_key=True,null=False)
     Empid = models.CharField(max_length=250)
     Name  = models.CharField(max_length=50, blank=True)
@@ -64,7 +53,8 @@ class Report(models.Model):
     Attendence      =  models.CharField(max_length=50,default='')
     Project_name    = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True,blank=True)
     Subproject_name = models.ForeignKey(Subproject, on_delete=models.SET_NULL, null=True,blank=True)
-    Task       = models.CharField(choices=TASK_TYPES,max_length=50,blank=True)
+#     Task       = models.CharField(choices=TASK_TYPES,max_length=50,blank=True)
+    Task       = models.CharField(max_length=50,blank=True)
     start_time = models.DateTimeField(null=True,blank=True)
     End_time   = models.DateTimeField(null=True,blank=True)
     No_hours   = models.DecimalField((u"Number of Hours"),max_digits=9, decimal_places=2,blank=True,default=0)
@@ -84,11 +74,19 @@ class Designation(models.Model):
     Title = models.CharField(max_length=100,default='',blank=True,null=True)
     def __str__(self):
         return self.Title
+    
 class Task(models.Model):
     id   = models.AutoField(primary_key=True)
     task = models.CharField(max_length=100,default='',blank=True,null=True)
     def __str__(self):
         return self.task
+    
+class projectTask(models.Model):
+    id   = models.AutoField(primary_key=True)
+    task = models.CharField(max_length=100,default='',blank=True,null=True)
+    def __str__(self):
+        return self.task
+    
 class Review(models.Model):
     Name  = models.CharField(max_length=250,default='', blank=True)
     EmpID = models.CharField(max_length=250)
