@@ -92,7 +92,7 @@ $('#create').on('click',function()
 			 var reportdate = document.getElementById("id_Report_date").value;
 			 var varDate = new Date(reportdate); //dd-mm-YYYY
 			 var today = new Date();
-			 if (val !="Leave")
+			 if (val !="Leave" && val !="WO")
 				 {
 				 if(varDate >  today)
 					 {

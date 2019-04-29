@@ -52,7 +52,7 @@
 	<div class="form-group row">
 	<label for="id_Task" class="col-sm-5 form-control-label">Task</label> <div class="col-sm-6">
 	<select name ="Task" class="form-control" id="id_Task">
-			<option value="">---------</option>
+			<option value= "{{form.Task.value}}" selected disable hidden>{{form.Task.value}}</option>
 		      {% for quiz in taskdata%}
 			  <option value="{{quiz.task}}">{{quiz.task}}</option>
 			  {%endfor%}
@@ -178,7 +178,7 @@ $('#updates').on('click',function()
 			 var reportdate = document.getElementById("id_Report_date").value;
 			 var varDate = new Date(reportdate); //dd-mm-YYYY
 			 var today = new Date();
-			 if (val !="Leave")
+			 if (val !="Leave" && val !="WO")
 				 {
 				 if(varDate >  today)
 					 {

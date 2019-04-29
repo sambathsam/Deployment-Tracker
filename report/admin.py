@@ -18,5 +18,5 @@ admin.register(Report)(admin.ModelAdmin)
 admin.register(datesofmonth)(admin.ModelAdmin)
 admin.register(Review)(admin.ModelAdmin)
 admin.register(Designation)(admin.ModelAdmin)
-admin.register(Task)(admin.ModelAdmin) #projectTask
+admin.register(Task)(admin.ModelAdmin)
 admin.register(projectTask)(admin.ModelAdmin)

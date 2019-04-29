@@ -14,7 +14,7 @@ print (datetime.date.today().replace(day=1))
 
 
 
-db = MySQLdb.Connect(host = '127.0.0.1', port = 3306, db = 'Deployment', user = 'root', passwd = 'admin@123')
+db = MySQLdb.Connect(host = '127.0.0.1', port = 3306, db = 'report', user = 'root', passwd = 'admin@123')
 cursor = db.cursor()
 tablename = 'report_datesofmonth'
 
@@ -22,7 +22,7 @@ cursor.execute("Truncate table "+tablename)
 db.commit()
 
 def insert(date):
-    #print ("Insert into "+tablename+" (weekday) values ('%s')" % (date))
+    print ("Insert into "+tablename+" (weekday) values ('%s')" % (date))
     cursor.execute("Insert into "+tablename+" (weekday) values ('%s')" % (date))
     db.commit()
 
