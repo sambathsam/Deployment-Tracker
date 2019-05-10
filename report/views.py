@@ -358,11 +358,11 @@ def report_update(request, pk):
     if request.method == 'POST':
 #         hours =  Report.objects.filter(~Q(id = pk),Empid=request.user.Empid,Report_date=datetime.date.today()).aggregate(Sum('No_hours'))
         request,hr_issue,error_msg = valuecheck(request)
-        date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        if date_d:
-            messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
-            form = ReportFormup(instance=report,user=request.user)
-        elif hr_issue:
+        #date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
+        #if date_d:
+            #messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
+            #form = ReportFormup(instance=report,user=request.user)
+        if hr_issue:
             messages.warning(request, error_msg)
             form = ReportFormup(instance=report,user=request.user)
         else:
