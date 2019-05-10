@@ -339,11 +339,11 @@ def reportList(request):
 def report_create(request):
     if request.method == 'POST':
         request,hr_issue,error_msg = valuecheck(request)
-        date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        if date_d:
-            messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
-            form = ReportForm()
-        elif hr_issue:
+        #date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
+        #if date_d:
+            #messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
+            #form = ReportForm()
+        if hr_issue:
             messages.warning(request, error_msg)
             form = ReportForm()
         else:
