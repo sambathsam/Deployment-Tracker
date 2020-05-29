@@ -34,7 +34,8 @@ class CustomUserChangeForm(UserChangeForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields=('Name', 'EmpID','Attitude','TaskInterpretation','TaskUnderstanding','Approach','Communication','Execution','Commitment','Fulfillment','Performance','Comments') 
+        fields=('Name', 'EmpID','legacy_Empid','Reviewer','Project','Review_month','Project_Knowledge','Productivity','Quality','Communication','Initiative','Reporting',
+        'Attendance','Attitude','Stability','Team_Coordination','Responsibility','Total','Remarks')     
 #'WFH':'WFH','OTH':'OTH','HWFH':'HWFH'}
 #
 CHOICES = [('Present', 'Present'), ('Leave', 'leave'),('Half day leave', 'Half day leave'),('Permission', 'Permission'),

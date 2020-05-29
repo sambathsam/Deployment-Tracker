@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+ <!-- <link rel="stylesheet" href="{% static 'assets/css/style2.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/collapsib.css' %}"> -->
+<div class="content-inner">
+	<header class="page-header">
+			 <div class="container-fluid">
+			{%if request.path  != '/reviewlist/chart/' %}
+				<h4 align="left"><a href='/reviewlist/{{usrname.Empid}}'>{{usrname.EmpName | title}} Review's</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="{{request.path}}" data-toggle="tooltip" title="Click to Chart"> <i class="fa fa-bar-chart"></i></a></h4>
+			{%else%}
+				<h2 class="no-margin-bottom"><a href='/reviewlist'>My Reviews</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="{{request.path}}" data-toggle="tooltip" title="Click to Chart"> <i class="fa fa-bar-chart"></i></a></h2>
+			{%endif%}</div>
+          </header>
+		  {%if data%}
+		  <tr>
+		  	<div id="chartContainer" style="height: 450px; width: 100%;"></div>
+		  </tr>
+		  {% else %}
+		  <tr>
+		  	<br>
+		  	<br>
+		    <div class="card-header d-flex align-items-center bg-info">
+	                      <h3 class="h4">No Reviews</h3>
+	        </div>
+		  </tr>
+		{%endif%}
+	<br>
+	</div>
+<script src="{% static 'reports/js/canvas.js' %}"></script>
+<script type="text/javascript">
+
+window.onload = function () {
+	var chart = new CanvasJS.Chart("chartContainer", {
+		title:{
+			text: " Review Chart"              
+		},
+		dataPointWidth: 80,
+		data: [              
+		{
+			// Change type to "doughnut", "line", "splineArea", etc.
+			type: "column",
+			dataPoints: {{data|safe}}
+		}
+		]
+	});
+	chart.render();
+}
+</script>
+{%endblock%}

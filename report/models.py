@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 from django.contrib.auth.models import AbstractUser, UserManager
 # 
@@ -96,20 +95,28 @@ class projectTask(models.Model):
         return self.task
 class Review(models.Model):
     Name  = models.CharField(max_length=250,default='', blank=True)
-    EmpID = models.CharField(max_length=250)
-    Attitude = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    TaskInterpretation = models.DecimalField(max_digits=9, decimal_places=2,default=0) 
-    TaskUnderstanding = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    Approach = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    EmpID = models.CharField(max_length=25)
+    legacy_Empid = models.CharField(max_length=25)
+    Reviewer     = models.CharField(max_length=250,default='', blank=True)
+    Project      = models.CharField(max_length=250)
+    Review_month = models.CharField(max_length=25)
+    
+    Project_Knowledge = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Productivity = models.DecimalField(max_digits=9, decimal_places=2,default=0) 
+    Quality = models.DecimalField(max_digits=9, decimal_places=2,default=0)
     Communication = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    Execution = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    Commitment = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    Fulfillment = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    Performance = models.DecimalField(max_digits=9, decimal_places=2,default=0)
-    Comments = models.CharField(max_length=1500,default='', blank=True)
+    Initiative = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Reporting = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Attendance = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Attitude = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Stability = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Team_Coordination = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Responsibility = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Total = models.DecimalField(max_digits=9, decimal_places=2,default=0)
+    Remarks = models.CharField(max_length=1500,default='', blank=True)
     dtcollected = models.DateField(auto_now_add=True)
     def __str__(self):
         return self.Name
-    
+
 
     

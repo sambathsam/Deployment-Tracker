@@ -5,10 +5,10 @@
    <div class="col-lg-12">
    <div class="card">
    <div class="card-header d-flex align-items-center">
-     <h3 class="h4">Performance Review</h3>
+     <h3 class="h4">Performance Review&nbsp;&nbsp;&nbsp;</h3>
+     <a href="#" data-toggle="tooltip" title="Score should be out of 10" data-content=""> <i class="icon-interface-windows"></i></a>
    </div>
   <div class="card-body">
-  	
       <form method="post" class="form-horizontal">
       {% csrf_token %}
       {% if form.errors %}
@@ -25,52 +25,75 @@
                 </div>
             {% endfor %}
         {% endif %}
-	    <div class="form-group row"><label for="id_Name" class="col-sm-2 form-control-label">Name</label><div class="col-sm-3"> <input type="text" readonly="true" name="Name" class="form-control"  id="id_Name" value="{{data.EmpName}}"></div></div>
-	    <div class="form-group row"><label for="id_EmpID" class="col-sm-2 form-control-label">EmpID</label><div class="col-sm-3"> <input type="text" readonly="true" name="EmpID" class="form-control" id="id_EmpID" value="{{data.Empid}}"></div></div>
-	    <div class="form-group row"><label for="id_Attitude" class="col-sm-2 form-control-label">Attitude</label><div class="col-sm-3"> <input type="number" min="1" max="5"  step="any" name="Attitude" class="form-control" required id="id_Attitude" ></div></div>
-	    <div class="form-group row"><label for="id_TaskInterpretation" class="col-sm-2 form-control-label">Task Interpretation</label><div class="col-sm-3"> <input type="number" min="1" max="5" step="any" name="TaskInterpretation" class="form-control" required id="id_TaskInterpretation"></div></div>
-	    <div class="form-group row"><label for="id_TaskUnderstanding" class="col-sm-2 form-control-label">Task Understanding</label><div class="col-sm-3"> <input type="number" name="TaskUnderstanding" min="1" max="5" step="any" class="form-control" required id="id_TaskUnderstanding"></div></div>
-	    <div class="form-group row"><label for="id_Approach" class="col-sm-2 form-control-label">Approach</label><div class="col-sm-3"> <input type="number" min="1" max="5" step="any" name="Approach" class="form-control" required id="id_Approach"></div></div>
-	    <div class="form-group row"><label for="id_Communication" class="col-sm-2 form-control-label">Communication</label><div class="col-sm-3"> <input type="number" min="1" max="5" step="any" name="Communication" class="form-control" required id="id_Communication"></div></div>
-	    <div class="form-group row"><label for="id_Execution" class="col-sm-2 form-control-label">Execution</label><div class="col-sm-3"> <input type="number" step="any" min="1" max="5" name="Execution" class="form-control" required id="id_Execution"></div></div>
-	    <div class="form-group row"><label for="id_Commitment" class="col-sm-2 form-control-label">Commitment</label><div class="col-sm-3"> <input type="number" step="any" min="1" max="5" name="Commitment" class="form-control" required id="id_Commitment"></div></div>
-	    <div class="form-group row"><label for="id_Fulfillment" class="col-sm-2 form-control-label">Fulfillment</label><div class="col-sm-3"> <input type="number" step="any" min="1" max="5" name="Fulfillment" class="form-control" required id="id_Fulfillment"></div></div>
-	    <div class="form-group row"><label for="id_Performance" class="col-sm-2 form-control-label">Performance</label><div class="col-sm-3"> <input type="number" step="any" min="1" max="5" name="Performance" class="form-control" required id="id_Performance" onfocus="add_number()" readonly="true"></div></div>
-	    <div class="form-group row"><label for="id_Comments" class="col-sm-2 form-control-label">Comments</label><div class="col-sm-3"> <input type="text" name="Comments" class="form-control" required  id="id_Comments"></div></div>
-	        
+        <div class="form-group row"><label for="id_Name" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Name</label><div class="col-sm-3"> <input readonly="true" type="text" name="Name" maxlength="250" id="id_Name" class="form-control" value="{{data.EmpName}}">
+        </div></div>
+		<div class="form-group row"><label for="id_EmpID" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">EmpID</label><div class="col-sm-3"> <input readonly="true" type="text" name="EmpID" maxlength="25" required id="id_EmpID" class="form-control" value="{{data.Empid}}"></div></div>
+		<div class="form-group row"><label for="id_legacy_Empid" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Legacy Empid</label><div class="col-sm-3"> <input readonly="true" type="text" name="legacy_Empid" maxlength="25" required id="id_legacy_Empid" class="form-control" value="{{data.legacy_Empid}}"></div></div>
+		<div class="form-group row"><label for="id_Reviewer" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Reviewer</label><div class="col-sm-3"> <input type="text" name="Reviewer" maxlength="250" id="id_Reviewer" class="form-control"></div></div>
+		<div class="form-group row">
+		<label for="id_Project" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Project</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="Project" id="id_Project" required>
+	                <option value= "" selected disable hidden>------</option>
+	                {% for quiz in Pro%}
+				     <option value="{{quiz.Projectname}}">{{quiz.Projectname}}</option>
+				    {%endfor%}
+	                </select>
+		</div></div>
+		<div class="form-group row"><label for="id_Review_month" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Review month</label><div class="col-sm-3"> 
+		<select name ="Review_month" class="form-control" id="id_Review_month" required>
+						<option value="">--select Month--</option>
+					  	<option value="January">January</option>
+						<option value="February">February</option>
+						<option value="March">March</option>
+						<option value="April">April</option>
+						<option value="May">May</option>
+						<option value="June">June</option>
+						<option value="July">July</option>
+						<option value="August">August</option>
+						<option value="September">September</option>
+						<option value="October">October</option>
+						<option value="November">November</option>
+						<option value="December">December</option>
+				</select></div></div>
+		<div class="form-group row"><label for="id_Project_Knowledge" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Project Knowledge</label><div class="col-sm-3"> <input type="number" name="Project_Knowledge" value="0" step="0.01" required id="id_Project_Knowledge" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Productivity" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Productivity</label><div class="col-sm-3"> <input type="number" name="Productivity" value="0" step="0.01" required id="id_Productivity" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Quality" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Quality</label><div class="col-sm-3"> <input type="number" name="Quality" value="0" step="0.01" required id="id_Quality" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Communication" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Communication</label><div class="col-sm-3"> <input type="number" name="Communication" value="0" step="0.01" required id="id_Communication" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Initiative" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Initiative</label><div class="col-sm-3"> <input type="number" name="Initiative" value="0" step="0.01" required id="id_Initiative" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Reporting" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Reporting</label><div class="col-sm-3"> <input type="number" name="Reporting" value="0" step="0.01" required id="id_Reporting" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Attendance" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Attendance</label><div class="col-sm-3"> <input type="number" name="Attendance" value="0" step="0.01" required id="id_Attendance" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Attitude" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Attitude</label><div class="col-sm-3"> <input type="number" name="Attitude" value="0" step="0.01" required id="id_Attitude" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Stability" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Stability</label><div class="col-sm-3"> <input type="number" name="Stability" value="0" step="0.01" required id="id_Stability" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Team_Coordination" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Team Coordination</label><div class="col-sm-3"> <input type="number" name="Team_Coordination" value="0" step="0.01" required id="id_Team_Coordination" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Responsibility" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Responsibility</label><div class="col-sm-3"> <input type="number" name="Responsibility" value="0" step="0.01" required id="id_Responsibility" class="form-control"></div></div>
+		<div class="form-group row"><label for="id_Total" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Total</label><div class="col-sm-3"> <input type="number" name="Total" value="0" step="0.01" required id="id_Total" class="form-control" onfocus="add_number()" readonly="true"></div></div>
+		<div class="form-group row"><label for="id_Remarks" class="col-sm-2 form-control-label" class="col-sm-2 form-control-label">Remarks</label><div class="col-sm-3"> <input type="text" name="Remarks" maxlength="1500" id="id_Remarks" class="form-control"></div></div>
+	    
          	<tr><td><button type="submit"  class="btn btn-success">Create</button></td>
          	<td><a href="/reviewlist/{{data.Empid}}" class="btn btn-primary btn-md">Previous Reviews</a></td>
          	</tr>
         </form>
+        
     </div>
-    <div class="col-sm-9 col-md-6 col-lg-2 ">
-    	<table class="table align-items-center">
-	    <thead>
-	      <tr>
-	        <th>Score</th>
-	        <th>Definition</th>
-	      </tr>
-	    </thead>
-	    <tbody>
-	      <tr><td>1</td><td>Very Good</td></tr>
-	      <tr><td>2</td><td>Good</td></tr>
-	      <tr><td>3</td><td>Average</td></tr>
-	      <tr><td>4</td><td>Poor</td></tr>
-	      <tr><td>5</td><td>Very Poor</td></tr></tbody></table>
-    </div></div></div>
+    </div></div>
+    
     <script>
 	    function add_number() {
-	        var Attitude  = parseFloat(document.getElementById("id_Attitude").value);
-	        var TaskInter = parseFloat(document.getElementById("id_TaskInterpretation").value);
-	        var Task      = parseFloat(document.getElementById("id_TaskUnderstanding").value);
-	        var Approach  = parseFloat(document.getElementById("id_Approach").value);
-	        var Commu	  = parseFloat(document.getElementById("id_Communication").value);
-	        var Execution = parseFloat(document.getElementById("id_Execution").value);
-	        var Commit    = parseFloat(document.getElementById("id_Commitment").value);
-	        var Fulfill   = parseFloat(document.getElementById("id_Fulfillment").value);
-	        var result = (Attitude+TaskInter+Task+Approach+Commu+Execution+Commit+Fulfill)/8;
-		var result = Math.round(result * 100) / 100
-	        document.getElementById("id_Performance").value = result;
+	    	var Project_Knowledge  = parseFloat(document.getElementById("id_Project_Knowledge").value);
+	    	var Productivity   = parseFloat(document.getElementById("id_Productivity").value);
+	    	var Quality        = parseFloat(document.getElementById("id_Quality").value);
+	    	var Communication  = parseFloat(document.getElementById("id_Communication").value);
+	    	var Initiative = parseFloat(document.getElementById("id_Initiative").value);
+	    	var Reporting  = parseFloat(document.getElementById("id_Reporting").value);
+	    	var Attendance = parseFloat(document.getElementById("id_Attendance").value);
+	    	var Attitude   = parseFloat(document.getElementById("id_Attitude").value);
+	    	var Stability  = parseFloat(document.getElementById("id_Stability").value);
+	    	var Team_Coordination  = parseFloat(document.getElementById("id_Team_Coordination").value);
+	    	var Responsibility     = parseFloat(document.getElementById("id_Responsibility").value);
+	        var result = (Project_Knowledge+Productivity+Quality+Communication+Initiative+Reporting+Attendance+Attitude+Stability+Team_Coordination+Responsibility)*0.9090909091;
+	        var result = Math.round(result * 100) / 100
+	        document.getElementById("id_Total").value = result;
 	    }
 	    </script>
 	    

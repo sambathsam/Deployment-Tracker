@@ -9,9 +9,9 @@
 	<header class="page-header">
 			 <div class="container-fluid">
 			{%if request.path  != '/reviewlist/' %}
-				<h4 align="left">{{usrname.EmpName | title}} Review's</h4>
+				<h4 align="left">{{usrname.EmpName | title}} Review's&nbsp;&nbsp;/&nbsp;&nbsp;<a href="{{request.path}}/chart" data-toggle="tooltip" title="Click to Chart"> <i class="fa fa-bar-chart"></i></a></h4>
 			{%else%}
-				<h2 class="no-margin-bottom">My Reviews</h2>
+				<h2 class="no-margin-bottom">My Reviews&nbsp;&nbsp;/&nbsp;&nbsp;<a href="{{request.path}}chart" data-toggle="tooltip" title="Click to Chart"> <i class="fa fa-bar-chart"></i></a></h2>
 			{%endif%}</div>
           </header>
      <section class="tables">   
@@ -25,33 +25,40 @@
 	              </div>
 	   {%endif%}
 	   {% if forloop.counter == 2%}
-	      <div class="content">
-		      <table border="0" class="table" >
+	      <div   class="table-wrapper-scroll-y my-custom-scrollbar">
+		      
+		      <table id="dtHorizontalExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
 		      <thead>
 		      <tr>
-		       <th>Attitude</th>
-			   <th>Interpretation</th>
-			   <th>Understanding</th>
-			   <th>Approach</th>
-			   <th>Communication</th>
-			   <th>Execution</th>
-			   <th>Commitment</th>
-			   <th>Fulfillment</th>
-			   <th>Performance</th>
-			   <th>Comments</th>
+		        <th>Knowledge</th>
+				<th>Productivity</th>
+				<th>Quality</th>
+				<th>Communication</th>
+				<th>Initiative</th>
+				<th>Reporting</th>
+				<th>Attendance</th>
+				<th>Attitude</th>
+				<th>Stability</th>
+				<th>Coordination</th>
+				<th>Responsibility</th>
+				<th>Total</th>
+				<th>Remarks</th>
 			   </tr></thead>
 		      {%for process in data%}
 			  <tr>
-			  <td> {{process.Attitude}}</td>
-			  <td> {{process.TaskInterpretation}}</td>
-			  <td> {{process.TaskUnderstanding}}</td>
-			  <td> {{process.Approach}}</td>
-			  <td> {{process.Communication}}</td>
-			  <td> {{process.Execution}}</td>
-			  <td> {{process.Commitment}}</td>
-			  <td> {{process.Fulfillment}}</td>
-			  <td> {{process.Performance}}</td>
-			  <td> {{process.Comments}}</td>
+			    <td> {{process.Project_Knowledge}}</td>
+				<td> {{process.Productivity}}</td>
+				<td> {{process.Quality}}</td>
+				<td> {{process.Communication}}</td>
+				<td> {{process.Initiative}}</td>
+				<td> {{process.Reporting}}</td>
+				<td> {{process.Attendance}}</td>
+				<td> {{process.Attitude}}</td>
+				<td> {{process.Stability}}</td>
+				<td> {{process.Team_Coordination}}</td>
+				<td> {{process.Responsibility}}</td>
+				<td> {{process.Total}}</td>
+				<td> {{process.Remarks}}</td>
 			  </tr>
 			  {%endfor%}
 			  </table>

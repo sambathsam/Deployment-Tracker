@@ -77,6 +77,7 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'registration/change_password.html', {'form': form})
+
 # class SignUp(generic.CreateView):
 #     form_class    = CustomUserCreationForm
 #     success_url   = reverse_lazy('userlist')
@@ -248,7 +249,6 @@ def pendingdate(request,empid):
             fields['fields']['Report_date'] = dater
             newdict[(dater)] = [fields['fields']]
             
-            
     newdict = sorted(newdict.items())
     return newdict,missdates
 
@@ -256,9 +256,9 @@ def edit_report(request):
     if request.user.is_authenticated:
         if request.method=='POST':
             if (request.POST['show_date']) !='':
-                date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['show_date']),'%Y-%m-%d')
+                date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['show_date']),'%Y-%m-%d')
                 if date_d:
-                    return HttpResponse("<h2>Exceeded More than 7 days to Edit report for given date.</h2><br><h3>Reload current page to back</h3>")
+                    return HttpResponse("<h2>Exceeded More than 3 days to Edit report for given date.</h2><br><h3>Reload current page to back</h3>")
                 reports = Report.objects.filter(Empid=request.user.Empid,Report_date=request.POST['show_date'],status=2)
                 return render(request,'report/edit_report.html', {'reports': reports})
             else:
@@ -270,6 +270,7 @@ def edit_report(request):
     
 def review(request,eid):
     if request.user.is_authenticated:
+        pro = Project.objects.filter()
         result_set = get_object_or_404(CustomUser, Empid=eid)
         if request.method =="POST":
             form = ReviewForm(request.POST)
@@ -281,7 +282,7 @@ def review(request,eid):
                 print("invalid")
         else:
             form = ReviewForm()
-        return render(request, 'review/review.html',{'form':form,'data':result_set})
+        return render(request, 'review/review.html',{'form':form,'data':result_set,'Pro':pro})
     else:
         return redirect('login')
     
@@ -293,12 +294,13 @@ def reviewlist(request):
         datadict =  Review.objects.filter(EmpID=empid,dtcollected__range=[(datetime.datetime.now()+datetime.timedelta(weeks=-24)).strftime("%Y-%m-%d"),datetime.datetime.now().strftime("%Y-%m-%d")])
         datadict = serializers.serialize("json", datadict)
         for fields in json.loads(datadict):
-            dater = datetime.datetime.strptime(str(fields['fields']['dtcollected']), '%Y-%m-%d').strftime("%b.%d, %Y")
+#             dater = datetime.datetime.strptime(str(fields['fields']['dtcollected']), '%Y-%m-%d').strftime("%b.%d, %Y")
+            dater = str(fields['fields']['Review_month'])
             if (str(dater)) in review_dict:
-                fields['fields']['dtcollected'] = dater
+                fields['fields']['Review_month'] = dater
                 review_dict[dater].append(fields['fields'])
             else:
-                fields['fields']['dtcollected'] = dater
+                fields['fields']['Review_month'] = dater
                 review_dict[(dater)] = [fields['fields']]
             
         review_dict = sorted(review_dict.items())
@@ -313,12 +315,13 @@ def reviewlist_emp(request,eid):
         datadict =  Review.objects.filter(EmpID=eid)#,created_at__Report_date=monday_of_last_week, created_at__Report_date=monday_of_this_week)
         datadict = serializers.serialize("json", datadict)
         for fields in json.loads(datadict):
-            dater = datetime.datetime.strptime(str(fields['fields']['dtcollected']), '%Y-%m-%d').strftime("%b.%d, %Y")
+#             dater = datetime.datetime.strptime(str(fields['fields']['dtcollected']), '%Y-%m-%d').strftime("%b.%d, %Y")
+            dater = str(fields['fields']['Review_month'])
             if (str(dater)) in review_dict:
-                fields['fields']['dtcollected'] = dater
+                fields['fields']['Review_month'] = dater
                 review_dict[dater].append(fields['fields'])
             else:
-                fields['fields']['dtcollected'] = dater
+                fields['fields']['Review_month'] = dater
                 review_dict[(dater)] = [fields['fields']]
         review_dict = sorted(review_dict.items())
         newdict,missdates = pendingdate(request,eid)
@@ -326,6 +329,29 @@ def reviewlist_emp(request,eid):
         return render(request, "review/reviewlist.html", {'form': review_dict, 'dates' : missdates,'usrname':uname})
     else:
         return HttpResponse("<h3>Your are not Superuser</h3>")
+def reviewchart(request,eid=None):
+    if eid:
+        if request.user.is_superuser:
+            datadict =  Review.objects.filter(EmpID=eid).order_by('dtcollected').values('Review_month','Total')#,created_at__Report_date=monday_of_last_week, created_at__Report_date=monday_of_this_week)
+            uname = get_object_or_404(CustomUser, Empid=eid)
+        else:
+            return HttpResponse("<h3>Your are not Superuser</h3>")
+    else:
+        eid=request.user.Empid;uname=''
+        datadict =  Review.objects.filter(EmpID=eid).order_by('dtcollected').values('Review_month','Total')#,created_at__Report_date=monday_of_last_week, created_at__Report_date=monday_of_this_week)
+        
+    label_ls = [];value_ls=[];data_ls=[]
+    for rdict in datadict:
+        a ={}
+        for key,value in rdict.items():
+            if re.search(r"\d",str(value)):
+                label_ls.append(value);a['y']=float(value)
+            else:
+                value_ls.append(str(value));a['label']=value
+        data_ls.append(a)
+#     data_dict = {"data":json.dumps({'labels': label_ls,'data': value_ls}),'usrname':uname}#chart 1
+    data_dict = {"data":data_ls,'usrname':uname}
+    return render(request, "review/chart.html", data_dict)
 def reportList(request):
     if request.user.is_authenticated:
         empid=request.user.Empid
@@ -339,10 +365,10 @@ def reportList(request):
 def report_create(request):
     if request.method == 'POST':
         request,hr_issue,error_msg = valuecheck(request)
-        #date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        #if date_d:
-            #messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
-            #form = ReportForm()
+        date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
+        if date_d:
+            messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
+            form = ReportForm()
         if hr_issue:
             messages.warning(request, error_msg)
             form = ReportForm()
@@ -358,10 +384,10 @@ def report_update(request, pk):
     if request.method == 'POST':
 #         hours =  Report.objects.filter(~Q(id = pk),Empid=request.user.Empid,Report_date=datetime.date.today()).aggregate(Sum('No_hours'))
         request,hr_issue,error_msg = valuecheck(request)
-        #date_d = (datetime.datetime.now()+datetime.timedelta(days=-7)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        #if date_d:
-            #messages.warning(request, 'Exceeded More than 7 days to fill report for given date.')
-            #form = ReportFormup(instance=report,user=request.user)
+        date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
+        if date_d:
+            messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
+            form = ReportFormup(instance=report,user=request.user)
         if hr_issue:
             messages.warning(request, error_msg)
             form = ReportFormup(instance=report,user=request.user)
