@@ -120,14 +120,15 @@ def HomePageView(request):
 #     queryset = CustomUser.objects.all()
 #     template_name = 'users/usrlist.html'
 # @login_required(login_url='/login')
+
 def UserList(request):
     if str(request.user) == 'AnonymousUser':
         return redirect('login')
     if request.user.is_staff:
-        queryset = CustomUser.objects.all().order_by('Team')
+        queryset = CustomUser.objects.filter(Empstatus='Active').order_by('Team')
     else:
-        queryset = CustomUser.objects.filter(Team=request.user.Team).order_by('Team')
-    page = request.GET.get('page', 1)
+        queryset = CustomUser.objects.filter(Empstatus='Active',Team=request.user.Team).order_by('Team')
+    page      = request.GET.get('page', 1)
     paginator = Paginator(queryset, 100)
     try:
         queryset = paginator.page(page)
@@ -642,23 +643,24 @@ def load_subpro(request):
 def attendence(request):
     if request.user.is_superuser:
         import calendar
+        team_name = Team.objects.all()
         if request.method =="POST":
             month = request.POST['Month']
             yyr   = request.POST['Year']
+            team  = request.POST['Team']
 #             currmonth = datetime.date.today().strftime('%Y-%m')
 #             year  = currmonth.split('-')[0]
             num_days = calendar.monthrange(int(yyr), int(month))[1]
             days = [datetime.date(int(yyr),int(month), day) for day in range(1, num_days+1)]
             if request.user.is_staff:
-                rows = Report.objects.filter(~Q(Empid = '1'),Report_date__month=int(month),Report_date__year=int(yyr)).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
-                Name_detail = CustomUser.objects.filter(~Q(Empid = '1')).values_list('Empid','EmpName')
+                rows = Report.objects.filter(~Q(Empid = '1'),Report_date__month=int(month),Report_date__year=int(yyr),Team=team).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
+                Name_detail = CustomUser.objects.filter(~Q(Empid = '1'),Team=team).values_list('Empid','EmpName')
             else:
-                rows = Report.objects.filter(~Q(Empid = '1'),Report_date__month=int(month),Report_date__year=int(yyr),Team=request.user.Team).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
-                Name_detail = CustomUser.objects.filter(~Q(Empid = '1'),Team=request.user.Team).values_list('Empid','EmpName')
+                rows = Report.objects.filter(~Q(Empid = '1'),Report_date__month=int(month),Report_date__year=int(yyr),Team=team).values_list('Empid','Name','Report_date','Attendence').order_by('Empid')
+                Name_detail = CustomUser.objects.filter(~Q(Empid = '1'),Team=team).values_list('Empid','EmpName')
             if len(rows)==0:
-                return HttpResponse("<h2>No reports for Selected Month</h2>")
+                return HttpResponse("<h2>No reports for Selected Month</h2><h3> Refresh  page</h3>")
             a= {};i=1
-            
             for name in Name_detail:
                 name = name[1]
                 a[name.lower()] = i
@@ -708,9 +710,10 @@ def attendence(request):
             wb.save(response)
             return response
         else:
-            return render(request, 'review/Attendence.html')
+            return render(request, 'review/Attendence.html',{'team':team_name})
     else:
         return redirect('login')
+    
 def export_users_xls(request):
     if request.user.is_superuser:
         if request.user.is_staff:

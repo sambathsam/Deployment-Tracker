@@ -29,7 +29,7 @@ class CustomUserChangeForm(UserChangeForm):
         model  = CustomUser
 #         fields = UserChangeForm.Meta.fields
         fields = ('username', 'email','primary_project','legacy_Empid','Empid','EmpName','date_join',
-                  'primary_process','is_superuser', 'Designation','Team','Empimage','password')#UserChangeForm.Meta.fields
+                  'primary_process','is_superuser', 'Designation','Team','Empimage','password','Empstatus')#UserChangeForm.Meta.fields
 
 class ReviewForm(forms.ModelForm):
     class Meta:

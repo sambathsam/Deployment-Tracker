@@ -18,6 +18,7 @@ class CustomUser(AbstractUser):
     Designation = models.CharField(blank=True, max_length=250, null=True)
     Team = models.CharField(blank=True, max_length=250, null=True)
     status      = models.IntegerField(default=0,blank=True)
+    Empstatus      = models.CharField(max_length=50,default='Active', blank=True)
     Empimage   = models.ImageField("EmpImages", upload_to="EmpImages/",blank=True,null=True)
     def __str__(self):
         return self.EmpName
@@ -70,7 +71,7 @@ class Report(models.Model):
     hold_hours   = models.DecimalField((u"Number of Hours"),max_digits=9, decimal_places=2,blank=True,default=0)
     Comments   = models.CharField(max_length=500,default='',blank=True,null=True)
     dtcollected = models.DateField(auto_now_add=True)
-    status  = models.IntegerField(default=0,blank=True)
+    status      = models.IntegerField(default=0,blank=True)
     Reportstatus      = models.CharField(max_length=50,default='Waiting', blank=True)
     def __str__(self):
         return self.Name
