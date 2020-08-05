@@ -189,8 +189,11 @@ def valuecheck(request):
             return request,hour_issue,'Already Applied leave for this date.'
         if Atten != 'Present':
             if Atten != 'Half day leave' and Atten != 'Permission':
-                hour_issue = True
-                return request,hour_issue,'Already Reported for this date.You not able to apply '+Atten
+                if Atten =='WFH' and att_db =='WFH':
+                    None
+                else:
+                    hour_issue = True
+                    return request,hour_issue,'Already Reported for this date.You not able to apply '+Atten
             
     if request.POST['start_time'] != '' and request.POST['End_time'] !='':
         start_time = re.search(r"(.*? \d+:\d+)",re.sub("T",' ',str(request.POST['start_time']))).group(1)
@@ -366,13 +369,14 @@ def reportList(request):
 def report_create(request):
     if request.method == 'POST':
         request,hr_issue,error_msg = valuecheck(request)
+        chk_ls = ['Leave','GH']
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
         if hr_issue:
             messages.warning(request, error_msg)
             form = ReportForm()
         else:
             form = ReportForm(request.POST)
-        if date_d:
+        if date_d and str(request.POST['Attendence']) not in chk_ls:
             messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
             form = ReportForm()
     else:
@@ -390,8 +394,9 @@ def report_update(request, pk):
             form = ReportFormup(instance=report,user=request.user)
         else:
             form = ReportFormup(request.POST, instance=report)
+        chk_ls = ['Leave','GH']
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        if date_d:
+        if date_d and str(request.POST['Attendence']) not in chk_ls:
             messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
             form = ReportFormup(instance=report,user=request.user)
     else:
