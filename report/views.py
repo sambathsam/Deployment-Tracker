@@ -367,14 +367,14 @@ def report_create(request):
     if request.method == 'POST':
         request,hr_issue,error_msg = valuecheck(request)
         date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        if date_d:
-            messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
-            form = ReportForm()
         if hr_issue:
             messages.warning(request, error_msg)
             form = ReportForm()
         else:
             form = ReportForm(request.POST)
+        if date_d:
+            messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
+            form = ReportForm()
     else:
         form = ReportForm()
     return save_report_form(request, form, 'report/includes/partial_report_create.html')
@@ -385,15 +385,15 @@ def report_update(request, pk):
     if request.method == 'POST':
 #         hours =  Report.objects.filter(~Q(id = pk),Empid=request.user.Empid,Report_date=datetime.date.today()).aggregate(Sum('No_hours'))
         request,hr_issue,error_msg = valuecheck(request)
-        date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
-        if date_d:
-            messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
-            form = ReportFormup(instance=report,user=request.user)
         if hr_issue:
             messages.warning(request, error_msg)
             form = ReportFormup(instance=report,user=request.user)
         else:
             form = ReportFormup(request.POST, instance=report)
+        date_d = (datetime.datetime.now()+datetime.timedelta(days=-3)) > datetime.datetime.strptime(str(request.POST['Report_date']),'%Y-%m-%d')
+        if date_d:
+            messages.warning(request, 'Exceeded More than 3 days to fill report for given date.')
+            form = ReportFormup(instance=report,user=request.user)
     else:
         form = ReportFormup(instance=report,user=request.user)
 #     return save_report_form(request, form, 'report/includes/partial_report_update.html')
